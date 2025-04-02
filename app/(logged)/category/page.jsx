@@ -1,12 +1,38 @@
 "use client";
-import { useAuth } from "@/src/context/AuthContext";
 
-export default function Dashboard() {
-  const { user, logout } = useAuth();
+import CategoryModal from "@/src/components/modals/CategoryModal";
+import { useState } from "react";
 
+export default function CategoryPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+ 
   return (
     <div className="min-h-screen p-4">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      {/* Header with Add Category Button */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Financial Overview</h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors flex items-center gap-2 cursor-pointer"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+          Add Category
+        </button>
+      </div>
+
+      {/* Category Cards Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {/* Income Card */}
         <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
@@ -141,6 +167,9 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+     <CategoryModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </div>
   );
 }

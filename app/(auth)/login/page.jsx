@@ -34,7 +34,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex bg-white">
-      <div className="w-1/2 max-h-screen">
+      <div className="w-1/2 max-h-screen hidden md:block">
         <Image
           src="https://images.pexels.com/photos/30814699/pexels-photo-30814699/free-photo-of-charming-yellow-house-in-winter-wonderland.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
           alt="Login"
@@ -43,7 +43,7 @@ export default function Login() {
           className="h-full w-full object-cover"
         />
       </div>
-      <div className="w-1/2 flex items-center justify-center flex-col">
+      <div className="w-full md:w-1/2 flex items-center justify-center flex-col p-4">
         {/* Logo and Company Name */}
         <div className="flex items-center gap-2 mb-8">
           <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">

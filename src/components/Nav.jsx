@@ -120,9 +120,9 @@ const Nav = () => {
               >
                 Contact
               </Link>
-              <button className="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 transition mx-4">
-                Get Started
-              </button>
+              <Link href={'/login'} className="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 transition mx-4">
+                Login
+              </Link>
             </div>
           </div>
         </div>

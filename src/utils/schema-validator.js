@@ -1,4 +1,4 @@
-export const getErrorMessageByPropertyName = (obj) => {
+export const getErrorMessageByPropertyName = (obj, propertyPath) => {
     // let obj = errors
     // let propertyPath = "admin.name.firstName"
     // let propertyPath = "admin.name.lastName"
