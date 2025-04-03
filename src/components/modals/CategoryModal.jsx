@@ -1,18 +1,16 @@
-"use client"
-import { useState } from "react";
+"use client";
+import FormInput from "../form/FormInput";
+import Form from "../form/Form";
+import FormSelect from "../form/FormSelect";
+import { useCategoryCreateMutation } from "@/src/redux/api/categoryApi";
 
 const CategoryModal = ({ isModalOpen, setIsModalOpen }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    type: "expense", // default value
-  });
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log(formData);
+  const [categoryCreate] = useCategoryCreateMutation();
+  const onSubmit = async (data) => {
+    const res = await categoryCreate(data).unwrap();
+    console.log(res);
+
     setIsModalOpen(false);
-    // Reset form
-    setFormData({ name: "", type: "expense" });
   };
   return (
     <div>
@@ -40,70 +38,54 @@ const CategoryModal = ({ isModalOpen, setIsModalOpen }) => {
                 </svg>
               </button>
             </div>
+            <Form submitHandler={onSubmit}>
+              <div className="space-y-4">
+                {/* Category Name */}
+                <div>
+                  <FormInput
+                    label={"Category Name"}
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Name"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  />
+                </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Category Name */}
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Category Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder="Name"
-                  required
-                />
-              </div>
+                {/* Category Type */}
+                <div>
+                  <FormSelect
+                    label={"Category Type"}
+                    id="type"
+                    name="type"
+                    placeholder="Select Type"
+                    options={[
+                      { label: "Expense", value: "EXPENSE" },
+                      { label: "Income", value: "INCOME" },
+                      { label: "Savings", value: "SAVINGS" },
+                      { label: "Investment", value: "INVESTMENT" },
+                    ]}
+                  />
+                </div>
 
-              {/* Category Type */}
-              <div>
-                <label
-                  htmlFor="type"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Category Type
-                </label>
-                <select
-                  id="type"
-                  value={formData.type}
-                  onChange={(e) =>
-                    setFormData({ ...formData, type: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  required
-                >
-                  <option value="expense">Expense</option>
-                  <option value="income">Income</option>
-                  <option value="savings">Savings</option>
-                  <option value="investment">Investment</option>
-                </select>
+                {/* Submit Button */}
+                <div className="flex gap-3 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors cursor-pointer"
+                  >
+                    Create Category
+                  </button>
+                </div>
               </div>
-
-              {/* Submit Button */}
-              <div className="flex gap-3 mt-6">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors cursor-pointer"
-                >
-                  Create Category
-                </button>
-              </div>
-            </form>
+            </Form>
           </div>
         </div>
       )}
