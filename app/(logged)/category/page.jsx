@@ -6,7 +6,8 @@ import { useCategoryListQuery } from "@/src/redux/api/categoryApi";
 export default function CategoryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: categories, isLoading } = useCategoryListQuery();
-  console.log(categories);
+
+
   return (
     <div className="min-h-screen p-4">
       {/* Header with Add Category Button */}
@@ -41,7 +42,7 @@ export default function CategoryPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                 <svg
-                  className="w-6 h-6 text-blue-600"
+                  className={`w-6 h-6 ${category?.type=="INCOME"? 'text-green-600': 'text-red-500'}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -54,12 +55,12 @@ export default function CategoryPage() {
                   />
                 </svg>
               </div>
-              <span className="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full">
-                +12.5%
+              <span className={`px-2.5 py-1 ${ category?.type=="INCOME"?'bg-green-50':'bg-red-100'} text-blue-700 text-xs font-medium rounded-full`}>
+                {category?.type}
               </span>
             </div>
             <h2 className="text-gray-500 text-sm mb-1">{category.name}</h2>
-            <p className="text-2xl font-bold text-gray-900">$43,300</p>
+            <p className="text-2xl font-bold text-gray-900">$20,00</p>
             <p className="text-sm text-gray-500 mt-2">
               Compared to $38,500 last month
             </p>
