@@ -1,15 +1,5 @@
 "use client";
-import FormInput from "../form/FormInput";
-import Form from "../form/Form";
-import FormSelect from "../form/FormSelect";
-import { useCategoryCreateMutation } from "@/src/redux/api/categoryApi";
-
-const DeleteModal = ({
-  isModalOpen,
-  setIsModalOpen,
-  deleteId,
-  onDelete,
-}) => {
+const DeleteModal = ({ isModalOpen, setIsModalOpen, deleteId, onDelete }) => {
   return (
     <div>
       {isModalOpen && (
