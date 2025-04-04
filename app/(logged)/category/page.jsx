@@ -1,12 +1,25 @@
 "use client";
-
+import { FiTrash, FiEdit } from "react-icons/fi";
 import CategoryModal from "@/src/components/modals/CategoryModal";
 import { useState } from "react";
-import { useCategoryListQuery } from "@/src/redux/api/categoryApi";
+import { useCategoryDeleteMutation, useCategoryListQuery } from "@/src/redux/api/categoryApi";
+import DeleteModal from "@/src/components/modals/DeleteModal";
 export default function CategoryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteCategoryId, setDeleteCategoryId] = useState(null);
   const { data: categories, isLoading } = useCategoryListQuery();
+  const [categoryDelete] = useCategoryDeleteMutation();
 
+  const deleteHandler = (id) => {
+    setIsDeleteModalOpen(true);
+    setDeleteCategoryId(id);
+  };
+
+  const deleteCategory = async (id) => {
+    const response = await categoryDelete(id);
+    console.log("Deleting category with ID:", response);
+  };
 
   return (
     <div className="min-h-screen p-4">
@@ -38,11 +51,18 @@ export default function CategoryPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {/* Income Card */}
         {categories?.map((category) => (
-          <div key={category?.id} className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+          <div
+            key={category?.id}
+            className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow"
+          >
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                 <svg
-                  className={`w-6 h-6 ${category?.type=="INCOME"? 'text-green-600': 'text-red-500'}`}
+                  className={`w-6 h-6 ${
+                    category?.type == "INCOME"
+                      ? "text-green-600"
+                      : "text-red-500"
+                  }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -55,127 +75,42 @@ export default function CategoryPage() {
                   />
                 </svg>
               </div>
-              <span className={`px-2.5 py-1 ${ category?.type=="INCOME"?'bg-green-50':'bg-red-100'} text-blue-700 text-xs font-medium rounded-full`}>
+              <span
+                className={`px-2.5 py-1 ${
+                  category?.type == "INCOME" ? "bg-green-50" : "bg-red-100"
+                } text-blue-700 text-xs font-medium rounded-full`}
+              >
                 {category?.type}
               </span>
             </div>
             <h2 className="text-gray-500 text-sm mb-1">{category.name}</h2>
-            <p className="text-2xl font-bold text-gray-900">$20,00</p>
-            <p className="text-sm text-gray-500 mt-2">
-              Compared to $38,500 last month
-            </p>
+            <p className="text-2xl font-bold text-gray-900">$0,00</p>
+            <div className="flex gap-3 mt-3">
+              <div
+                onClick={() => deleteHandler(category?.id)}
+                className="cursor-pointer text-xl text-red-300 hover:text-red-600"
+              >
+                <FiTrash />
+              </div>
+              <div className="cursor-pointer text-xl text-gray-400 hover:text-gray-600">
+                <FiEdit />
+              </div>
+            </div>
           </div>
         ))}
-
-        {/* Expense Card */}
-        {/* <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-red-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-            </div>
-            <span className="px-2.5 py-1 bg-red-50 text-red-700 text-xs font-medium rounded-full">
-              +8.2%
-            </span>
-          </div>
-          <h2 className="text-gray-500 text-sm mb-1">Expenses</h2>
-          <p className="text-2xl font-bold text-gray-900">$28,650</p>
-          <p className="text-sm text-gray-500 mt-2">
-            Compared to $26,500 last month
-          </p>
-        </div> */}
-
-        {/* Savings Card */}
-        {/* <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                />
-              </svg>
-            </div>
-            <span className="px-2.5 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-full">
-              +5.3%
-            </span>
-          </div>
-          <h2 className="text-gray-500 text-sm mb-1">Savings</h2>
-          <p className="text-2xl font-bold text-gray-900">$14,650</p>
-          <div className="mt-2">
-            <div className="flex justify-between text-sm mb-1">
-              <span className="text-gray-500">Progress</span>
-              <span className="text-gray-700 font-medium">73%</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className="bg-green-500 h-2 rounded-full"
-                style={{ width: "73%" }}
-              ></div>
-            </div>
-          </div>
-        </div> */}
-
-        {/* Balance Card */}
-        {/* <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-purple-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"
-                />
-              </svg>
-            </div>
-            <span className="px-2.5 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded-full">
-              Net Worth
-            </span>
-          </div>
-          <h2 className="text-gray-500 text-sm mb-1">Total Balance</h2>
-          <p className="text-2xl font-bold text-gray-900">$128,950</p>
-          <div className="flex items-center gap-2 mt-2">
-            <div className="flex-1">
-              <div className="text-xs text-gray-500 mb-1">Assets</div>
-              <div className="text-sm font-medium">$158,000</div>
-            </div>
-            <div className="w-px h-8 bg-gray-200"></div>
-            <div className="flex-1">
-              <div className="text-xs text-gray-500 mb-1">Liabilities</div>
-              <div className="text-sm font-medium">$29,050</div>
-            </div>
-          </div>
-        </div> */}
       </div>
 
       {/* Modal */}
       <CategoryModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
+      />
+      {/* Delete Modal */}
+      <DeleteModal
+        isModalOpen={isDeleteModalOpen}
+        setIsModalOpen={setIsDeleteModalOpen}
+        deleteId={deleteCategoryId}
+        onDelete={deleteCategory}
       />
     </div>
   );
