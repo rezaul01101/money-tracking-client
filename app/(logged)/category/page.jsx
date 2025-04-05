@@ -2,6 +2,7 @@
 import { FiTrash, FiEdit } from "react-icons/fi";
 import CategoryModal from "@/src/components/modals/CategoryModal";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import {
   useCategoryDeleteMutation,
   useCategoryListQuery,
@@ -13,7 +14,7 @@ export default function CategoryPage() {
   const [deleteCategoryId, setDeleteCategoryId] = useState(null);
   const { data: categories, isLoading } = useCategoryListQuery();
   const [categoryDelete] = useCategoryDeleteMutation();
-
+  const { currency } = useSelector((state) => state.settings);
   const deleteHandler = (id) => {
     setIsDeleteModalOpen(true);
     setDeleteCategoryId(id);
@@ -87,7 +88,7 @@ export default function CategoryPage() {
               </span>
             </div>
             <h2 className="text-gray-500 text-sm mb-1">{category.name}</h2>
-            <p className="text-2xl font-bold text-gray-900">$0,00</p>
+            <p className="text-2xl font-bold text-gray-900">{currency}0,00</p>
             <div className="flex gap-3 mt-3">
               <div
                 onClick={() => deleteHandler(category?.id)}

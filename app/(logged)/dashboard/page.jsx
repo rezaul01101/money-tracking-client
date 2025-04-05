@@ -1,7 +1,9 @@
 "use client";
 import { useAuth } from "@/src/context/AuthContext";
+import { useSelector } from "react-redux";
 
 export default function Dashboard() {
+  const { currency } = useSelector((state) => state.settings);
   const { user, logout } = useAuth();
 
   return (
@@ -31,7 +33,7 @@ export default function Dashboard() {
             </span>
           </div>
           <h2 className="text-gray-500 text-sm mb-1">Income</h2>
-          <p className="text-2xl font-bold text-gray-900">$43,300</p>
+          <p className="text-2xl font-bold text-gray-900">{currency}43,300</p>
           <p className="text-sm text-gray-500 mt-2">
             Compared to $38,500 last month
           </p>
@@ -60,7 +62,7 @@ export default function Dashboard() {
             </span>
           </div>
           <h2 className="text-gray-500 text-sm mb-1">Expenses</h2>
-          <p className="text-2xl font-bold text-gray-900">$28,650</p>
+          <p className="text-2xl font-bold text-gray-900">{currency}28,650</p>
           <p className="text-sm text-gray-500 mt-2">
             Compared to $26,500 last month
           </p>
@@ -89,7 +91,7 @@ export default function Dashboard() {
             </span>
           </div>
           <h2 className="text-gray-500 text-sm mb-1">Savings</h2>
-          <p className="text-2xl font-bold text-gray-900">$14,650</p>
+          <p className="text-2xl font-bold text-gray-900">{currency}14,650</p>
           <div className="mt-2">
             <div className="flex justify-between text-sm mb-1">
               <span className="text-gray-500">Progress</span>
@@ -127,11 +129,11 @@ export default function Dashboard() {
             </span>
           </div>
           <h2 className="text-gray-500 text-sm mb-1">Total Balance</h2>
-          <p className="text-2xl font-bold text-gray-900">$128,950</p>
+          <p className="text-2xl font-bold text-gray-900">{currency}128,950</p>
           <div className="flex items-center gap-2 mt-2">
             <div className="flex-1">
               <div className="text-xs text-gray-500 mb-1">Assets</div>
-              <div className="text-sm font-medium">$158,000</div>
+              <div className="text-sm font-medium">{currency}158,000</div>
             </div>
             <div className="w-px h-8 bg-gray-200"></div>
             <div className="flex-1">

@@ -9,7 +9,6 @@ export default function ExpensePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { data: categories, isLoading } = useCategoryListQuery();
-  
   const deleteHandler = (id) => {
     setIsDeleteModalOpen(true);
   };

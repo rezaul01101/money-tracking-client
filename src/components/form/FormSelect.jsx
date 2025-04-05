@@ -10,7 +10,8 @@ const FormSelect = ({
   validation,
   label,
   required,
-  options = [], // Add options prop for select choices
+  options = [],
+  defaultValue = "",
 }) => {
   const {
     control,
@@ -26,18 +27,20 @@ const FormSelect = ({
       <Controller
         control={control}
         name={name}
-        defaultValue="" // Add default value to prevent uncontrolled to controlled warning
+        defaultValue={defaultValue}
         render={({ field }) => (
           <select
             id={id}
             className="w-full text-sm py-2 pl-2 border focus:border-black focus:outline-none rounded-md"
             {...field}
-            value={field.value || ""} // Ensure value is never undefined
             required={required}
           >
             <option value="">{placeholder}</option>
             {options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option
+                key={option.value}
+                value={option.value}
+              >
                 {option.label}
               </option>
             ))}

@@ -20,8 +20,14 @@ export const userApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    getUser: build.query({
+      query: () => ({
+        url: `${userUrl}`,
+        method: "GET",
+      }),
+    }),
   }),
   
 })
 
-export const { useUserUpdateMutation,useUserQuery } = userApi
+export const { useUserUpdateMutation,useUserQuery,useGetUserQuery } = userApi
