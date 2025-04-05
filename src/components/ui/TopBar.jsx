@@ -1,11 +1,14 @@
 "use client";
 import { useAuth } from "@/src/context/AuthContext";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+
 
 const TopBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const { user, logout } = useAuth();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const { userInfo } = useSelector((state) => state.user);
   return (
     <div>
       <div className="fixed top-0 left-0 right-0 h-16 bg-white shadow-sm z-40">
@@ -151,7 +154,7 @@ const TopBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   <span className="text-sm font-medium text-gray-600">JD</span>
                 </div>
                 <span className="hidden md:block text-sm font-medium text-gray-700">
-                  John Doe
+                  {userInfo?.name}
                 </span>
               </button>
 

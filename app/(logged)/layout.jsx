@@ -1,15 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useAuth } from "@/src/context/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LeftSidebar from "@/src/components/ui/LeftSidebar";
 import TopBar from "@/src/components/ui/TopBar";
 import { AuthProvider } from "@/src/context/AuthContext";
+import { useGetUserQuery } from "@/src/redux/api/userApi";
+import { useDispatch } from "react-redux";
+import { storeUserInfo } from "@/src/redux/features/user/userSlice";
 
 export default function RootLayout({ children }) {
+  const dispatch = useDispatch();
+  const { data: user } = useGetUserQuery();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    dispatch(storeUserInfo(user));
+  }, [user]);
 
   return (
     <AuthProvider>
