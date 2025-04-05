@@ -23,6 +23,7 @@ export const categoryApi = baseApi.injectEndpoints({
         url: `${CategoryUrl}/list/${type}`,
         method: "GET",
       }),
+      providesTags: ["category"],
     }),
     categoryDelete: build.mutation({
       query: (id) => ({

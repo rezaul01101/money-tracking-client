@@ -9,11 +9,19 @@ export const transactionApi = baseApi.injectEndpoints({
         method: "POST",
         data: transactionData,
       }),
-      // invalidatesTags: ["category"],
+      invalidatesTags: ["transaction"],
+    }),
+    transactionListByType: build.query({
+      query: (type) => ({
+        url: `${url}/list/${type}`,
+        method: "GET",
+      }),
+      providesTags: ["transaction"],
     }),
   }),
 });
 
 export const {
   useTransactionCreateMutation,
+  useTransactionListByTypeQuery
 } = transactionApi;

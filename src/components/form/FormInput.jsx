@@ -11,6 +11,7 @@ const FormInput = ({
   validation,
   label,
   required,
+  defaultValue,
 }) => {
   const {
     control,
@@ -26,7 +27,7 @@ const FormInput = ({
       <Controller
         control={control}
         name={name}
-        defaultValue="" // Add default value to prevent uncontrolled to controlled warning
+        defaultValue={defaultValue} // Add default value to prevent uncontrolled to controlled warning
         render={({ field }) => (
           <input
             id={id}

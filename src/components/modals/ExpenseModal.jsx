@@ -5,12 +5,13 @@ import FormSelect from "../form/FormSelect";
 import { useCategoryListByTypeQuery } from "@/src/redux/api/categoryApi";
 import FormTextarea from "../form/FormTextarea";
 import { useTransactionCreateMutation } from "@/src/redux/api/transactionApi";
+import { Controller } from "react-hook-form";
 
-const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
+const ExpenseModal = ({ isModalOpen, setIsModalOpen }) => {
   const [transactionCreate] = useTransactionCreateMutation();
-  const { data: categories, isLoading } = useCategoryListByTypeQuery("INCOME");
+  const { data: categories, isLoading } = useCategoryListByTypeQuery("EXPENSE");
   const onSubmit = async (data) => {
-    data.type = "INCOME";
+    data.type = "EXPENSE";
     const res = await transactionCreate(data).unwrap();
     console.log("data", data);
     console.log("res", res);
@@ -23,7 +24,7 @@ const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
         <div className="fixed inset-0 bg-[#0000008a] bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold">Add Income</h2>
+              <h2 className="text-xl font-semibold">Add Expense</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-500 hover:text-gray-700 cursor-pointer"
@@ -51,7 +52,7 @@ const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
                 {/* Category Name */}
                 <div>
                   <FormInput
-                    label={"Income Amount"}
+                    label={"Expense Amount"}
                     type="number"
                     id="name"
                     name="amount"
@@ -66,7 +67,6 @@ const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
                     id="date"
                     name="date"
                     placeholder="date"
-                    required={true}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                   />
                 </div>
@@ -119,4 +119,4 @@ const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
   );
 };
 
-export default IncomeModal;
+export default ExpenseModal;
