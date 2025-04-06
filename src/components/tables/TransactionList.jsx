@@ -1,77 +1,13 @@
-import React from "react";
+"use client"
+import React,{useState,useEffect} from "react";
 import { FiArrowUp, FiArrowDown, FiRepeat } from "react-icons/fi";
-import { useTransactionListByTypeQuery } from "@/src/redux/api/transactionApi";
+import { useTransactionListByTypeQuery,useTransactionListQuery } from "@/src/redux/api/transactionApi";
 import { useSelector } from "react-redux";
 
 const TransactionList = ({ transactionType = null }) => {
   const { currency } = useSelector((state) => state.settings);
+  const { data: transactions, isLoading } = useTransactionListByTypeQuery(transactionType);
 
-  const { data: transactions, isLoading } =
-    useTransactionListByTypeQuery(transactionType);
-
-  // Mock data for demonstration
-  // const transactions = [
-  //   {
-  //     id: 1,
-  //     type: "sent",
-  //     amount: "500.00 IDR",
-  //     secondaryAmount: null,
-  //     paymentMethod: "Credit Card",
-  //     paymentDetails: "**** 6969",
-  //     status: "success",
-  //     activity: "Sending money to Raihan Fikri",
-  //   },
-  //   {
-  //     id: 2,
-  //     type: "sent",
-  //     amount: "200,000 IDR",
-  //     secondaryAmount: "20 USD",
-  //     paymentMethod: "Wire Transfer",
-  //     paymentDetails: "**** 9830",
-  //     status: "success",
-  //     activity: "Sending money to Bani Zuhilmin",
-  //   },
-  //   {
-  //     id: 3,
-  //     type: "received",
-  //     amount: "1,500 USD",
-  //     secondaryAmount: null,
-  //     paymentMethod: "Bank Transfer",
-  //     paymentDetails: "**** 6663",
-  //     status: "success",
-  //     activity: "Received money from Andrew",
-  //   },
-  //   {
-  //     id: 4,
-  //     type: "received",
-  //     amount: "2,500 USD",
-  //     secondaryAmount: null,
-  //     paymentMethod: "PayPal",
-  //     paymentDetails: "@claristaj",
-  //     status: "success",
-  //     activity: "Payment for product",
-  //   },
-  //   {
-  //     id: 5,
-  //     type: "received",
-  //     amount: "1,500 USD",
-  //     secondaryAmount: null,
-  //     paymentMethod: "Payoneer",
-  //     paymentDetails: "**** 1083",
-  //     status: "incomplete",
-  //     activity: "Payment for invoice",
-  //   },
-  //   {
-  //     id: 6,
-  //     type: "converted",
-  //     amount: "400,000 IDR",
-  //     secondaryAmount: "40 USD",
-  //     paymentMethod: "Debit Card",
-  //     paymentDetails: "**** 2833",
-  //     status: "failed",
-  //     activity: "Convert money from USD to IDR",
-  //   },
-  // ];
 
   const getTypeIcon = (type) => {
     switch (type) {

@@ -18,10 +18,18 @@ export const transactionApi = baseApi.injectEndpoints({
       }),
       providesTags: ["transaction"],
     }),
+    transactionList: build.query({
+      query: () => ({
+        url: `${url}/list`,
+        method: "GET",
+      }),
+      providesTags: ["transaction"],
+    }),
   }),
 });
 
 export const {
   useTransactionCreateMutation,
-  useTransactionListByTypeQuery
+  useTransactionListByTypeQuery,
+  useTransactionListQuery
 } = transactionApi;
