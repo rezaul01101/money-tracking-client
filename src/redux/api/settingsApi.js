@@ -8,6 +8,8 @@ export const settingsApi = baseApi.injectEndpoints({
         url: `${url}/update`,
         method: "POST",
         data: data,
+        contentType: "multipart/form-data"
+
       }),
       invalidatesTags: ["settings"],
     }),

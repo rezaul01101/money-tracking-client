@@ -1,5 +1,6 @@
 "use client";
 import { useAuth } from "@/src/context/AuthContext";
+import Image from "next/image";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -150,8 +151,14 @@ const TopBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                 className="flex items-center space-x-2 focus:outline-none pr-4 cursor-pointer"
               >
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-sm font-medium text-gray-600">JD</span>
+                <div className="rounded-full bg-gray-200 flex items-center justify-center">
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_API_URL}/${userInfo?.image}`}
+                    alt="Profile" 
+                    width={100}
+                    height={100}
+                    className="rounded-full object-cover w-[40px] h-[40px]"
+                  />
                 </div>
                 <span className="hidden md:block text-sm font-medium text-gray-700">
                   {userInfo?.name}

@@ -1,6 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { useUserUpdateMutation } from "@/src/redux/api/userApi";
+import React, { useState,useEffect } from "react";
+import {
+  useGetUserQuery,
+  useUserUpdateMutation,
+} from "@/src/redux/api/userApi";
+import { storeUserInfo } from "@/src/redux/features/user/userSlice";
+
 import {
   useUpdateSettingsMutation,
   useGetSettingsQuery,
@@ -10,10 +15,9 @@ import { toast } from "react-hot-toast";
 import Image from "next/image";
 import FormSelect from "@/src/components/form/FormSelect";
 import Form from "@/src/components/form/Form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { storeCurrency } from "@/src/redux/features/settingsSlice";
-
-const user = {};
+import FormFileInput from "@/src/components/form/FormFileInput";
 
 const isLoading = false;
 const SettingPage = () => {
@@ -26,13 +30,15 @@ const SettingPage = () => {
     { value: "BDT", label: "Bangladesh Taka (৳)", icon: "৳" },
   ];
 
-  //   const { data: user, isLoading } = useGetUserQuery();
-  const [updateUser] = useUserUpdateMutation();
+  const { data: user, refetch } = useGetUserQuery();
   const { theme, setTheme } = useTheme();
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [updateSettings] = useUpdateSettingsMutation();
-  const { data: settings, isLoading } = useGetSettingsQuery();
+  const { data: settings, isLoading,refetch:settingRefetch } = useGetSettingsQuery();
+  const { userInfo } = useSelector((state) => state.user);
+  const [selectedCurrency,setSelectedCurrency]=useState("BDT");
+
   const dispatch = useDispatch();
 
   const handleImageChange = (e) => {
@@ -47,49 +53,46 @@ const SettingPage = () => {
     }
   };
 
+
+
+
+
   const onSubmit = async (data) => {
     try {
-      const res = await updateSettings(data).unwrap();
-      if (res?.key === "currency") {
-        const selectedCurrency = currencies.find(
-          (curr) => curr.value === res.value
-        );
-        if (selectedCurrency) {
-          dispatch(storeCurrency(selectedCurrency.icon));
-        }
+      let InputData = new FormData();
+      if (data.file) {
+        InputData.append("profile", data.file);
       }
+      InputData.append("currency", data.currency);
+
+      const res = await updateSettings(InputData).unwrap();
+
+      const currency = currencies.find(
+        (curr) => curr.value === data.currency
+      );
+
+      if (currency) {
+        console.log(currency?.value)
+        setSelectedCurrency(currency?.value)
+        dispatch(storeCurrency(currency.icon));
+      }
+
+      // Refetch user data to get updated image
+      const updatedUser = await refetch();
+      if (updatedUser?.data) {
+        dispatch(storeUserInfo(updatedUser.data));
+      }
+
       toast.success("Settings updated successfully");
     } catch (error) {
       toast.error(error?.data?.message || "Failed to update settings");
     }
-
-    // try {
-    //   const formData = new FormData();
-    //   if (selectedImage) {
-    //     formData.append("profilePicture", selectedImage);
-    //   }
-    //   if (data.currency) {
-    //     formData.append("currency", data.currency);
-    //   }
-    //   if (data.currentPassword && data.newPassword) {
-    //     formData.append("currentPassword", data.currentPassword);
-    //     formData.append("newPassword", data.newPassword);
-    //   }
-    //   await updateUser(formData).unwrap();
-    //   toast.success("Settings updated successfully");
-    //   reset();
-    // } catch (error) {
-    //   toast.error(error?.data?.message || "Failed to update settings");
-    // }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
-  }
+ useEffect(()=>{
+  const s= settings?.find((item) => item.key === "currency")?.value
+  setSelectedCurrency(s);
+ });
 
   return (
     <div className="max-w-full p-6">
@@ -101,17 +104,20 @@ const SettingPage = () => {
             <h2 className="text-xl font-semibold">Profile Information</h2>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                {previewImage || user?.profilePicture ? (
+                {previewImage || userInfo?.image ? (
                   <Image
-                    src={previewImage || user?.profilePicture}
+                    src={
+                      previewImage ||
+                      `${process.env.NEXT_PUBLIC_API_URL}/${userInfo?.image}`
+                    }
                     alt="Profile"
-                    width={100}
-                    height={100}
-                    className="rounded-full object-cover"
+                    width={200}
+                    height={200}
+                    className="rounded-md object-cover w-[120px] h-[120px]"
                   />
                 ) : (
                   <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-2xl">{user?.name?.[0]}</span>
+                    <span className="text-2xl">{userInfo?.name?.[0]}</span>
                   </div>
                 )}
                 <label
@@ -138,18 +144,26 @@ const SettingPage = () => {
                     />
                   </svg>
                 </label>
-                <input
+                <FormFileInput
+                  id="profile-picture"
+                  name="file"
+                  multiple={false}
+                  placeholder="image"
+                  className="hidden"
+                  handleChange={handleImageChange}
+                />
+                {/* <input
                   id="profile-picture"
                   type="file"
                   accept="image/*"
                   className="hidden"
                   onChange={handleImageChange}
-                />
+                /> */}
               </div>
               <div>
-                <p className="font-semibold">{user?.name}</p>
+                <p className="font-semibold">{userInfo?.name}</p>
                 <p className="text-gray-600 dark:text-gray-300">
-                  {user?.email}
+                  {userInfo?.email}
                 </p>
               </div>
             </div>
@@ -158,9 +172,7 @@ const SettingPage = () => {
           {/* Currency Selection */}
           <div className="space-y-4">
             <FormSelect
-              defaultValue={
-                settings?.find((item) => item.key === "currency")?.value
-              }
+              defaultValue={selectedCurrency}
               label={"Select Currency"}
               id="currency"
               name="currency"

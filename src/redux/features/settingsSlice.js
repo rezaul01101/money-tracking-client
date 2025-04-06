@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   currency:"৳",
+  profilePicture: null,
+  settingsInfo:null,
 };
 
 export const settingsSlice = createSlice({
@@ -11,10 +13,13 @@ export const settingsSlice = createSlice({
     storeCurrency: (state, action) => {
       state.currency = action.payload;
     },
+    storeSettingInfo: (state, action) => {
+      state.settingsInfo = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { storeCurrency } = settingsSlice.actions;
+export const { storeCurrency,storeSettingInfo } = settingsSlice.actions;
 
 export default settingsSlice.reducer;
