@@ -1,13 +1,16 @@
-"use client"
-import React,{useState,useEffect} from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import { FiArrowUp, FiArrowDown, FiRepeat } from "react-icons/fi";
-import { useTransactionListByTypeQuery,useTransactionListQuery } from "@/src/redux/api/transactionApi";
+import {
+  useTransactionListByTypeQuery,
+  useTransactionListQuery,
+} from "@/src/redux/api/transactionApi";
 import { useSelector } from "react-redux";
 
 const TransactionList = ({ transactionType = null }) => {
   const { currency } = useSelector((state) => state.settings);
-  const { data: transactions, isLoading } = useTransactionListByTypeQuery(transactionType);
-
+  const { data: transactions, isLoading } =
+    useTransactionListByTypeQuery(transactionType);
 
   const getTypeIcon = (type) => {
     switch (type) {
@@ -94,23 +97,20 @@ const TransactionList = ({ transactionType = null }) => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div
-                  className={`text-sm font-bold text-gray-900`}
+                  className={`text-sm font-bold  ${
+                    transaction.type === "EXPENSE"
+                      ? "text-gray-900"
+                      : "text-green-500"
+                  }`}
                 >
                   {transaction.type === "EXPENSE" ? "- " : "+ "}
-                 {currency}{new Intl.NumberFormat().format(transaction.amount)}
+                  {currency}
+                  {new Intl.NumberFormat().format(transaction.amount)}
                 </div>
-                {transaction.secondaryAmount && (
-                  <div className="text-sm text-gray-500">
-                    {transaction.secondaryAmount}
-                  </div>
-                )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-medium text-gray-900">
                   {transaction.paymentMethod}
-                </div>
-                <div className="text-sm text-gray-500">
-                  {transaction.paymentDetails}
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">

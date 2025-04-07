@@ -23,7 +23,7 @@ const TopBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold">E</span>
               </div>
-              <span className="ml-2 text-xl font-semibold">Expense App</span>
+              <span className="ml-2 text-xl font-semibold">Money Manager</span>
             </div>
             {/* Left section with mobile menu button */}
             <div className="flex items-center pl-18">
