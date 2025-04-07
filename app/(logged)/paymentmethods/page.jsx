@@ -73,7 +73,7 @@ export default function CategoryPage() {
               <div>
                 <p className="text-gray-500 text-sm mb-1">Available Balance</p>
                 <p className="text-xl font-semibold text-gray-900">
-                  {currency}{method?.initialAmount}
+                  {currency} {new Intl.NumberFormat().format(method.initialAmount)}
                 </p>
               </div>
               <div className="flex gap-2">

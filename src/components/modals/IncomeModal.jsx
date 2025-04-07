@@ -5,15 +5,22 @@ import FormSelect from "../form/FormSelect";
 import { useCategoryListByTypeQuery } from "@/src/redux/api/categoryApi";
 import FormTextarea from "../form/FormTextarea";
 import { useTransactionCreateMutation } from "@/src/redux/api/transactionApi";
+import {usePaymentMethodListQuery} from "@/src/redux/api/paymentMethodApi";
+import { toast } from "react-hot-toast";
+
 
 const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
   const [transactionCreate] = useTransactionCreateMutation();
   const { data: categories, isLoading } = useCategoryListByTypeQuery("INCOME");
+  const { data: paymentMethods, isLoading:paymentMethodsLoading } = usePaymentMethodListQuery();
   const onSubmit = async (data) => {
     data.type = "INCOME";
-    const res = await transactionCreate(data).unwrap();
-    console.log("data", data);
-    console.log("res", res);
+    try{
+      const res = await transactionCreate(data).unwrap();
+      toast.success("Income added successfully");
+    }catch(error){
+      toast.error("Income saved failed. try again");
+    }
 
     setIsModalOpen(false);
   };
@@ -21,7 +28,7 @@ const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
     <div>
       {isModalOpen && (
         <div className="fixed inset-0 bg-[#0000008a] bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Add Income</h2>
               <button
@@ -60,6 +67,21 @@ const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
                   />
                 </div>
                 <div>
+                  <FormSelect
+                    label={"Select Payment Method"}
+                    id="paymentMethodId"
+                    name="paymentMethodId" 
+                    placeholder="Select payment method"
+                    options={paymentMethods?.map((paymentMethod) => ({
+                      label: paymentMethod.name,
+                      value: paymentMethod.id,
+                    }))}
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    Choose how you received this income (e.g. Cash, Bank Transfer,)
+                  </p>
+                </div>
+                <div>
                   <FormInput
                     label={"Date"}
                     type="date"
@@ -84,6 +106,8 @@ const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
                     }))}
                   />
                 </div>
+                {/* Category Type */}
+               
                 <div>
                   <FormTextarea
                     label={"Notes"}

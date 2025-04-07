@@ -5,16 +5,24 @@ import FormSelect from "../form/FormSelect";
 import { useCategoryListByTypeQuery } from "@/src/redux/api/categoryApi";
 import FormTextarea from "../form/FormTextarea";
 import { useTransactionCreateMutation } from "@/src/redux/api/transactionApi";
-import { Controller } from "react-hook-form";
+import { usePaymentMethodListQuery } from "@/src/redux/api/paymentMethodApi";
+import { toast } from "react-hot-toast";
+
 
 const ExpenseModal = ({ isModalOpen, setIsModalOpen }) => {
   const [transactionCreate] = useTransactionCreateMutation();
   const { data: categories, isLoading } = useCategoryListByTypeQuery("EXPENSE");
+  const { data: paymentMethods, isLoading: paymentMethodsLoading } =
+    usePaymentMethodListQuery();
+
   const onSubmit = async (data) => {
     data.type = "EXPENSE";
-    const res = await transactionCreate(data).unwrap();
-    console.log("data", data);
-    console.log("res", res);
+    try{
+      const res = await transactionCreate(data).unwrap();
+      toast.success("Expense added successfully");
+    }catch(error){
+      toast.error("Expense saved failed. try again");
+    }
 
     setIsModalOpen(false);
   };
@@ -22,7 +30,7 @@ const ExpenseModal = ({ isModalOpen, setIsModalOpen }) => {
     <div>
       {isModalOpen && (
         <div className="fixed inset-0 bg-[#0000008a] bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Add Expense</h2>
               <button
@@ -49,6 +57,7 @@ const ExpenseModal = ({ isModalOpen, setIsModalOpen }) => {
               defaultValues={{ date: new Date().toISOString().split("T")[0] }}
             >
               <div className="space-y-4">
+               
                 {/* Category Name */}
                 <div>
                   <FormInput
@@ -59,6 +68,22 @@ const ExpenseModal = ({ isModalOpen, setIsModalOpen }) => {
                     placeholder="Amount"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                   />
+                </div>
+                <div>
+                  <FormSelect
+                    label={"Select Payment Method"}
+                    id="paymentMethodId"
+                    name="paymentMethodId"
+                    placeholder="Select payment method"
+                    options={paymentMethods?.map((paymentMethod) => ({
+                      label: paymentMethod.name,
+                      value: paymentMethod.id,
+                    }))}
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    Choose how you paid for this expense (e.g. Cash, Bank
+                    Transfer)
+                  </p>
                 </div>
                 <div>
                   <FormInput

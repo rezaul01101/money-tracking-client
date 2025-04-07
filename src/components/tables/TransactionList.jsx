@@ -5,12 +5,14 @@ import {
   useTransactionListByTypeQuery,
   useTransactionListQuery,
 } from "@/src/redux/api/transactionApi";
+import { usePaymentMethodListQuery } from "@/src/redux/api/paymentMethodApi";
 import { useSelector } from "react-redux";
 
 const TransactionList = ({ transactionType = null }) => {
   const { currency } = useSelector((state) => state.settings);
   const { data: transactions, isLoading } =
     useTransactionListByTypeQuery(transactionType);
+
 
   const getTypeIcon = (type) => {
     switch (type) {
@@ -110,7 +112,7 @@ const TransactionList = ({ transactionType = null }) => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-medium text-gray-900">
-                  {transaction.paymentMethod}
+                  {transaction?.paymentMethod?.name}
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
