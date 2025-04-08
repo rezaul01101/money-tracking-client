@@ -62,8 +62,8 @@ const CategoryModal = ({ isModalOpen, setIsModalOpen }) => {
                     options={[
                       { label: "Expense", value: "EXPENSE" },
                       { label: "Income", value: "INCOME" },
-                      { label: "Savings", value: "SAVING" },
-                      { label: "Investment", value: "INVESTMENT" },
+                      // { label: "Savings", value: "SAVING" },
+                      // { label: "Investment", value: "INVESTMENT" },
                     ]}
                   />
                 </div>

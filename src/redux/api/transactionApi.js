@@ -9,7 +9,7 @@ export const transactionApi = baseApi.injectEndpoints({
         method: "POST",
         data: transactionData,
       }),
-      invalidatesTags: ["transaction","paymentMethod"],
+      invalidatesTags: ["transaction","paymentMethod","category"],
     }),
     transactionListByType: build.query({
       query: (type) => ({
