@@ -24,9 +24,9 @@ export default function Login() {
     try {
       setServerErrors([]); // Clear previous errors
       const res = await userLogin(data).unwrap();
-      if (res?.data?.accessToken) {
-        storeUserInfo({ accessToken: res?.data?.accessToken });
-        router.push("/");
+      if (res?.accessToken) {
+        storeUserInfo({ accessToken: res?.accessToken });
+        router.push("/dashboard");
         toast.success("User logged in successfully!");
       }
     } catch (error) {
