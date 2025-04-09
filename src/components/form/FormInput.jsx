@@ -14,6 +14,7 @@ const FormInput = ({
   label,
   required,
   defaultValue,
+  serverError,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -21,6 +22,11 @@ const FormInput = ({
     formState: { errors },
   } = useFormContext();
   const errorMessage = getErrorMessageByPropertyName(errors, name);
+
+  // Get server error message for this field
+  const serverErrorMessage = serverError?.find(
+    (error) => error.path === name
+  )?.message;
 
   return (
     <div className="flex flex-col w-full">
@@ -37,6 +43,7 @@ const FormInput = ({
         control={control}
         name={name}
         rules={validation}
+        defaultValue={defaultValue}
         render={({ field }) => (
           <div className="relative">
             <input
@@ -48,7 +55,11 @@ const FormInput = ({
                     : "password"
                   : type
               }
-              className="w-full text-sm py-2 pl-2 pr-10 border focus:border-black focus:outline-none rounded-md"
+              className={`w-full text-sm py-2 pl-2 pr-10 border rounded-md focus:outline-none ${
+                errorMessage || serverErrorMessage
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-300 focus:border-black"
+              }`}
               placeholder={placeholder}
               {...field}
               value={field.value || ""}
@@ -66,8 +77,25 @@ const FormInput = ({
           </div>
         )}
       />
-      {errorMessage && (
-        <span className="text-red-500 text-xs mt-1">{errorMessage}</span>
+      {(errorMessage || serverErrorMessage) && (
+        <div className="flex items-center mt-1">
+          <span className="text-red-500 text-xs flex items-center">
+            <svg
+              className="w-4 h-4 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            {errorMessage || serverErrorMessage}
+          </span>
+        </div>
       )}
     </div>
   );

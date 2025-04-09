@@ -1,5 +1,3 @@
-
-
 import { authKey } from "@/src/constants/storageKey";
 import { getFromLocalStorage } from "@/src/utils/local-storage";
 
@@ -35,17 +33,26 @@ instance.interceptors.response.use(
     return responseObject;
   },
   async function (error) {
-    if (error?.response?.status === 403) {
+    // console.log(error)
+    if (error?.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      return Promise.reject({
+        status: error.response.status,
+        data: error.response.data,
+      });
+    } else if (error?.request) {
+      // The request was made but no response was received
+      return Promise.reject({
+        status: "FETCH_ERROR",
+        data: { message: "Network error. Please check your connection." },
+      });
     } else {
-      const responseObject = {
-        statusCode: error?.response?.data?.statusCode || 500,
-        message: error?.response?.data?.message || "Something went wrong",
-        errorMessages: error?.response?.data?.message,
-      };
-      return responseObject;
+      return Promise.reject({
+        status: "ERROR",
+        data: { message: error.message || "Something went wrong" },
+      });
     }
-
-    // return Promise.reject(error);
   }
 );
 

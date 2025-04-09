@@ -6,29 +6,40 @@ import { isLoggedIn, storeUserInfo } from "@/src/services/auth.service";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+
 export default function Login() {
   const [userLogin] = useUserLoginMutation();
   const router = useRouter();
+  const [serverErrors, setServerErrors] = useState([]);
 
   useEffect(() => {
-    if(isLoggedIn()){
+    if (isLoggedIn()) {
       router.push("/dashboard");
     }
   }, [router]);
 
   const onSubmit = async (data) => {
-
     try {
-      // setLoading(true);
-      const res = await userLogin({ ...data }).unwrap();
-      if (res?.accessToken) {
-        storeUserInfo({ accessToken: res?.accessToken });
-        router.push("/dashboard");
+      setServerErrors([]); // Clear previous errors
+      const res = await userLogin(data).unwrap();
+      if (res?.data?.accessToken) {
+        storeUserInfo({ accessToken: res?.data?.accessToken });
+        router.push("/");
+        toast.success("User logged in successfully!");
       }
-      // console.log(res);
     } catch (error) {
-      console.log(error);
+      if (error?.data?.errorMessages) {
+        // Handle server validation errors
+        setServerErrors(error.data.errorMessages);
+        toast.error(error?.data?.message);
+      } else {
+        // Handle other types of errors
+        const errorMessage =
+          error?.data?.message || "Login failed. Please try again.";
+        toast.error(errorMessage);
+      }
     }
   };
 
@@ -76,6 +87,15 @@ export default function Login() {
                   name="email"
                   placeholder="email"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  required
+                  validation={{
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email address",
+                    },
+                  }}
+                  serverError={serverErrors}
                 />
               </div>
 
@@ -101,6 +121,15 @@ export default function Login() {
                   id="password"
                   placeholder="********"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  required
+                  validation={{
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                  }}
+                  serverError={serverErrors}
                 />
               </div>
 

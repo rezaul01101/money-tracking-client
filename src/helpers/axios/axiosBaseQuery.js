@@ -16,10 +16,11 @@ export const axiosBaseQuery = (
     });
     return result;
   } catch (axiosError) {
+    let err = axiosError
     return {
       error: {
-        status: axiosError.response?.status,
-        data: axiosError.response?.data || axiosError.message,
+        status: err.status,
+        data: err.data,
       },
     };
   }
