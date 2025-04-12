@@ -33,7 +33,7 @@ export default function OTPVerification() {
         toast.success("OTP verified successfully!");
       }
     } catch (error) {
-      toast.error(error?.message || "Verification failed");
+      toast.error(error?.data?.message || "Verification failed");
     } finally {
       setLoading(false);
     }

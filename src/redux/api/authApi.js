@@ -55,6 +55,15 @@ export const authApi = baseApi.injectEndpoints({
       ),
         invalidatesTags:['user']
     }),
+    emailVerificaitonToken: build.mutation({
+        query: (data) => (
+          {
+            url:`${AUTH_URL}/varification-token-check`,
+            method: "POST",
+            data: data
+        }
+      ),
+    }),
   }),
   
 })
@@ -64,5 +73,6 @@ export const {
   useUserSignupMutation,
   useForgotPasswordMutation,
   useVerifyOtpMutation,
-  useResetPasswordMutation
+  useResetPasswordMutation,
+  useEmailVerificaitonTokenMutation
 } = authApi
