@@ -1,7 +1,7 @@
 "use client";
 import Form from "@/src/components/form/Form";
 import FormInput from "@/src/components/form/FormInput";
-import { useUserSignupMutation } from "@/src/redux/api/authApi";
+import { useForgotPasswordMutation } from "@/src/redux/api/authApi";
 import { isLoggedIn, storeUserInfo } from "@/src/services/auth.service";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,25 +10,22 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 export default function Signup() {
-  const [userSignup] = useUserSignupMutation();
+  const [forgotPassword] = useForgotPasswordMutation();
   const router = useRouter();
   const [serverErrors, setServerErrors] = useState([]);
   const [message, setMessage] = useState(false);
 
-  // useEffect(() => {
-  //   if (isLoggedIn()) {
-  //     router.push("/dashboard");
-  //   }
-  // }, [router]);
+
 
   const onSubmit = async (data) => {
     try {
-      setServerErrors([]); // Clear previous errors
-      const res = await userSignup(data).unwrap();
-      if (res) {
-        setMessage(true);
-        toast.success("Registration successful! Please check your email to verify your account.");
-      }
+      // setServerErrors([]); // Clear previous errors
+      const res = await forgotPassword(data).unwrap();
+      console.log(res)
+      // if (res) {
+      //   setMessage(true);
+      //   toast.success("Registration successful! Please check your email to verify your account.");
+      // }
       // console.log(res)
       // if (res?.accessToken) {
       //   storeUserInfo({ accessToken: res?.accessToken });
@@ -53,7 +50,7 @@ export default function Signup() {
     <div className="min-h-screen flex bg-white">
       <div className="w-1/2 max-h-screen hidden md:block">
         <Image
-          src="https://images.pexels.com/photos/5909798/pexels-photo-5909798.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          src="https://images.pexels.com/photos/5474298/pexels-photo-5474298.jpeg?auto=compress&cs=tinysrgb&w=1200"
           alt="Login"
           width={500}
           height={500}
@@ -70,54 +67,17 @@ export default function Signup() {
         </div>
 
         {/* Login Form Container */}
-        {message ? (
-          <div className="w-full max-w-md text-center">
-            <h2 className="text-2xl font-bold mb-4">Verification Email Sent</h2>
-            <p className="text-gray-600 mb-4">
-              We have sent a verification link to your email address. Please
-              check your inbox and click the link to verify your account.
-            </p>
-            <p className="text-gray-500 text-sm">
-              If you don't see the email, please check your spam folder.
-            </p>
-            <Link
-              href="/login"
-              className="mt-6 inline-block text-black font-medium hover:underline"
-            >
-              Return to Login
-            </Link>
-          </div>
-        ) : (
           <div className="w-full max-w-md">
             <h1 className="text-2xl font-bold mb-2 text-center">
-              Create free account
+              Forgot your password?
             </h1>
             <p className="text-gray-600 mb-8 text-center">
-              Enter your details below to create your account
+              Enter your email below to reset your password
             </p>
             <Form submitHandler={onSubmit}>
               <div className="space-y-4">
                 {/* Email Input */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium mb-2"
-                  >
-                    Name
-                  </label>
-                  <FormInput
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="Name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                    required
-                    validation={{
-                      required: "Name is required",
-                    }}
-                    serverError={serverErrors}
-                  />
-                </div>
+                
                 <div>
                   <label
                     htmlFor="email"
@@ -143,46 +103,19 @@ export default function Signup() {
                   />
                 </div>
 
-                {/* Password Input */}
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label
-                      htmlFor="password"
-                      className="block text-sm font-medium"
-                    >
-                      Password
-                    </label>
-                  </div>
-                  <FormInput
-                    name="password"
-                    type="password"
-                    id="password"
-                    placeholder="********"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                    required
-                    validation={{
-                      required: "Password is required",
-                      minLength: {
-                        value: 8,
-                        message: "Password must be at least 8 characters",
-                      },
-                    }}
-                    serverError={serverErrors}
-                  />
-                </div>
 
                 {/* Login Button */}
                 <button
                   type="submit"
                   className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer"
                 >
-                  Sign up
+                  Send email
                 </button>
               </div>
             </Form>
             {/* Sign Up Link */}
             <p className="mt-6 text-center text-gray-600">
-              Already have an account?{" "}
+              Remember your password?{" "}
               <Link
                 href="/login"
                 className="text-black font-medium hover:underline"
@@ -191,7 +124,6 @@ export default function Signup() {
               </Link>
             </p>
           </div>
-        )}
       </div>
     </div>
   );
