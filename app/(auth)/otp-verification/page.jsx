@@ -1,54 +1,60 @@
 "use client";
-import Form from "@/src/components/form/Form";
-import FormInput from "@/src/components/form/FormInput";
-import { useForgotPasswordMutation } from "@/src/redux/api/authApi";
-import { isLoggedIn, storeUserInfo } from "@/src/services/auth.service";
+import { useVerifyOtpMutation,useResetPasswordMutation } from "@/src/redux/api/authApi";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {  useState } from "react";
 import { toast } from "react-hot-toast";
+import VerificationOtp from "@/src/components/forgotPassword/VerificationOtp"
+import PasswordReset from "@/src/components/forgotPassword/passwordReset";
+
+
 
 export default function OTPVerification() {
   const router = useRouter();
-  const [otp, setOtp] = useState(["", "", "", "",""]);
+  const searchParams = useSearchParams();
+  const email = searchParams?.get("email");
+  const [otp, setOtp] = useState(["", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
-
-  // Handle OTP input change
-  const handleOtpChange = (index, value) => {
-    if (isNaN(value)) return;
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    // Auto focus next input
-    if (value !== "" && index < 4) {
-      const nextInput = document.querySelector(`input[name=otp-${index + 1}]`);
-      if (nextInput) {
-        nextInput.focus();
-      }
-    }
-  };
+  const [verifyOtp] = useVerifyOtpMutation();
+  const [resetPassword] = useResetPasswordMutation();
+  const [isVerified, setIsVerified] = useState(false);
 
   // Handle verification
-  const handleVerify = async () => {
-    const otpValue = otp.join("");
-    if (otpValue.length !== 4) {
-      toast.error("Please enter a valid OTP");
-      return;
-    }
-    setLoading(true);
+  const handleVerify = async (otpValue) => {
     try {
-      // Add your verification logic here
-      toast.success("OTP verified successfully!");
-      router.push("/dashboard");
+        const data={
+            "email":email,
+            "otp":otpValue
+        }
+      const res = await verifyOtp(data).unwrap();
+      if (res) {
+        setOtp(otpValue)
+        setIsVerified(true);
+        toast.success("OTP verified successfully!");
+      }
     } catch (error) {
       toast.error(error?.message || "Verification failed");
     } finally {
       setLoading(false);
     }
   };
+
+  const handlePasswordReset = async (password) => {
+    try {
+      const data = {
+        email: email,
+        password: password,
+        otp: otp,
+      };
+      const res = await resetPassword(data).unwrap();
+      if (res) {
+        toast.success("Password reset successfully!");
+        router.push("/login");
+      }
+    }catch(error){
+      toast.error(error?.message || "Password reset failed");
+    }
+  }
 
   // Handle resend
   const handleResend = () => {
@@ -76,57 +82,7 @@ export default function OTPVerification() {
         </div>
 
         {/* OTP Form Container */}
-        <div className="w-full max-w-md">
-          <h1 className="text-2xl font-semibold mb-2 text-center">
-            Enter verification code
-          </h1>
-          <p className="text-gray-600 mb-8 text-center">
-            We've sent a code to hello@alignui.com
-          </p>
-
-          {/* OTP Input Fields */}
-          <div className="flex justify-center gap-4 mb-8">
-            {otp.map((digit, index) => (
-              <input
-                key={index}
-                type="text"
-                name={`otp-${index}`}
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleOtpChange(index, e.target.value)}
-                className="w-14 h-14 text-center text-2xl border rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-              />
-            ))}
-          </div>
-
-          {/* Resend Link */}
-          <p className="text-center text-gray-600 mb-6">
-            Didn't get a code?{" "}
-            <button
-              onClick={handleResend}
-              className="text-blue-600 hover:underline cursor-pointer"
-            >
-              Click to resend
-            </button>
-          </p>
-
-          {/* Action Buttons */}
-          <div className="flex gap-4">
-            <button
-              onClick={() => router.back()}
-              className="w-full bg-white text-black border py-2 rounded-lg  transition-colors cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleVerify}
-              disabled={loading}
-              className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer"
-            >
-              {loading ? "Verifying..." : "Verify"}
-            </button>
-          </div>
-        </div>
+        {isVerified ? <PasswordReset handlePasswordReset={handlePasswordReset} /> : <VerificationOtp email={email} handleVerify={handleVerify} />}
       </div>
     </div>
   );

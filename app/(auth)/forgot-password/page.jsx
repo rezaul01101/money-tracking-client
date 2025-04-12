@@ -19,9 +19,11 @@ export default function Signup() {
 
   const onSubmit = async (data) => {
     try {
-      // setServerErrors([]); // Clear previous errors
       const res = await forgotPassword(data).unwrap();
-      console.log(res)
+      if(res){
+        router.push(`/otp-verification?email=${data.email}`);
+        toast.success("otp sent to you email");
+      }
       // if (res) {
       //   setMessage(true);
       //   toast.success("Registration successful! Please check your email to verify your account.");

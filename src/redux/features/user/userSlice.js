@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   userInfo:{},
+  otpInfo:null
 };
 
 export const userSlice = createSlice({
@@ -11,10 +12,13 @@ export const userSlice = createSlice({
     storeUserInfo: (state, action) => {
       state.userInfo = action.payload;
     },
+    storeOtpInfo: (state, action) => {
+      state.otpInfo = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { storeUserInfo } = userSlice.actions;
+export const { storeUserInfo,storeOtpInfo } = userSlice.actions;
 
 export default userSlice.reducer;
