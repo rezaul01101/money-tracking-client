@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-
 const TopBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const { user, logout } = useAuth();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -20,14 +19,16 @@ const TopBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
           }`}
         >
           <div className="flex items-center justify-between">
+            <div className="hidden md:block">
             <div className="flex items-center">
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold">E</span>
               </div>
               <span className="ml-2 text-xl font-semibold">Money Manager</span>
             </div>
+            </div>
             {/* Left section with mobile menu button */}
-            <div className="flex items-center pl-18">
+            <div className="flex items-center md:pl-18">
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 cursor-pointer"
@@ -77,89 +78,26 @@ const TopBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
           {/* Right section */}
           <div className="flex items-center space-x-4">
-            {/* Notifications */}
-            <div className="relative">
-              <button
-                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none cursor-pointer"
-              >
-                <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
-              </button>
-
-              {/* Notifications dropdown */}
-              {isNotificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-1 z-50">
-                  <div className="px-4 py-2 border-b">
-                    <h3 className="text-sm font-semibold">Notifications</h3>
-                  </div>
-                  <div className="max-h-96 overflow-y-auto">
-                    {[1, 2, 3].map((item) => (
-                      <a
-                        key={item}
-                        href="#"
-                        className="block px-4 py-3 hover:bg-gray-50"
-                      >
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0">
-                            <div className="h-8 w-8 rounded-full bg-pink-100 flex items-center justify-center">
-                              <svg
-                                className="h-4 w-4 text-pink-600"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                          <div className="ml-3">
-                            <p className="text-sm font-medium text-gray-900">
-                              New expense added
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              2 minutes ago
-                            </p>
-                          </div>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* Profile dropdown */}
             <div className="relative">
               <button
                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                className="flex items-center space-x-2 focus:outline-none pr-4 cursor-pointer"
+                className="flex items-center md:space-x-2 justify-center focus:outline-none md:pr-4 cursor-pointer"
               >
                 <div className="rounded-full bg-gray-200 flex items-center justify-center">
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_API_URL}/${userInfo?.image}`}
-                    alt="Profile" 
-                    width={100}
-                    height={100}
-                    className="rounded-full object-cover w-[40px] h-[40px]"
-                  />
+                  {userInfo?.image ? (
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/${userInfo?.image}`}
+                      alt="Profile"
+                      width={100}
+                      height={100}
+                      className="rounded-full object-cover w-[40px] h-[40px]"
+                    />
+                  ) : (
+                    <div className="w-[40px] h-[40px] rounded-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-2xl">{userInfo?.name?.[0]}</span>
+                    </div>
+                  )}
                 </div>
                 <span className="hidden md:block text-sm font-medium text-gray-700">
                   {userInfo?.name}

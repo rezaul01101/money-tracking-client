@@ -11,11 +11,15 @@ import { storeUserInfo } from "@/src/redux/features/user/userSlice";
 export default function RootLayout({ children }) {
   const dispatch = useDispatch();
   const { data: user } = useGetUserQuery();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     dispatch(storeUserInfo(user));
   }, [user]);
+
+  useEffect(() => {
+    setIsSidebarOpen(window.innerWidth >= 768);
+  }, []);
 
   return (
     <AuthProvider>

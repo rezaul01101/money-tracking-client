@@ -43,6 +43,14 @@ const navigation = [
 
 export default function LeftSidebar({ isSidebarOpen, setIsSidebarOpen }) {
   const pathname = usePathname();
+
+  const handleNavigation = () => {
+    // Close sidebar on mobile/tablet when clicking a navigation link
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   return (
     <div>
       <div
@@ -68,6 +76,7 @@ export default function LeftSidebar({ isSidebarOpen, setIsSidebarOpen }) {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={handleNavigation}
                 className={`flex items-center px-2 py-2 mt-2 text-sm font-medium rounded-lg ${
                   isActive
                     ? "text-pink-700 bg-pink-50"
@@ -99,7 +108,7 @@ export default function LeftSidebar({ isSidebarOpen, setIsSidebarOpen }) {
       {/* Backdrop for mobile */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-50 z-20 md:hidden"
+          className="fixed inset-0 bg-opacity-50 z-20 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}
