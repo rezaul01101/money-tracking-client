@@ -2,11 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { FiArrowUp, FiArrowDown, FiRepeat } from "react-icons/fi";
 import {
-  useTransactionListByTypeQuery,
-  useTransactionListQuery,
+  useTransactionListByTypeQuery
 } from "@/src/redux/api/transactionApi";
-import { usePaymentMethodListQuery } from "@/src/redux/api/paymentMethodApi";
 import { useSelector } from "react-redux";
+import ListLoadingPlaceholder from "./ListLoadingPlaceholder";
 
 const TransactionList = ({ transactionType = null }) => {
   const { currency } = useSelector((state) => state.settings);
@@ -76,58 +75,65 @@ const TransactionList = ({ transactionType = null }) => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {transactions?.map((transaction) => (
-            <tr key={transaction.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">
-                    {getTypeIcon(transaction.type)}
+          {isLoading ? (
+            // Loading rows
+            [...Array(5)].map((_, index) => (
+              <ListLoadingPlaceholder key={index} />
+            ))
+          ) : (
+            transactions?.map((transaction) => (
+              <tr key={transaction.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">
+                      {getTypeIcon(transaction.type)}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="ml-2 text-sm font-medium text-gray-900 capitalize">
+                        {transaction.type}
+                      </span>
+                      <span className="ml-2 text-sm text-pink-500">
+                        {new Date(transaction.date).toLocaleString("en-US", {
+                          day: "numeric",
+                          month: "short", 
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-col">
-                    <span className="ml-2 text-sm font-medium text-gray-900 capitalize">
-                      {transaction.type}
-                    </span>
-                    <span className="ml-2 text-sm text-pink-500">
-                      {new Date(transaction.date).toLocaleString("en-US", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div
+                    className={`text-sm font-bold  ${
+                      transaction.type === "EXPENSE"
+                        ? "text-gray-900"
+                        : "text-green-500"
+                    }`}
+                  >
+                    {transaction.type === "EXPENSE" ? "- " : "+ "}
+                    {currency}
+                    {new Intl.NumberFormat().format(transaction.amount)}
                   </div>
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div
-                  className={`text-sm font-bold  ${
-                    transaction.type === "EXPENSE"
-                      ? "text-gray-900"
-                      : "text-green-500"
-                  }`}
-                >
-                  {transaction.type === "EXPENSE" ? "- " : "+ "}
-                  {currency}
-                  {new Intl.NumberFormat().format(transaction.amount)}
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">
-                  {transaction?.paymentMethod?.name}
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                {transaction.notes}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {transaction.type === "EXPENSE"
-                  ? `Sending money to `
-                  : `Received money from `}
-                <b>
-                  {transaction?.category?.name ? transaction.category.name : ""}
-                </b>
-              </td>
-            </tr>
-          ))}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">
+                    {transaction?.paymentMethod?.name}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {transaction.notes}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {transaction.type === "EXPENSE"
+                    ? `Sending money to `
+                    : `Received money from `}
+                  <b>
+                    {transaction?.category?.name ? transaction.category.name : ""}
+                  </b>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
