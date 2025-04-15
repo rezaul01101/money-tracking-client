@@ -4,20 +4,28 @@ import Form from "../form/Form";
 import FormSelect from "../form/FormSelect";
 import { useCategoryListByTypeQuery } from "@/src/redux/api/categoryApi";
 import FormTextarea from "../form/FormTextarea";
-import { useTransactionCreateMutation } from "@/src/redux/api/transactionApi";
+import { useTransactionCreateMutation,useTransactionUpdateMutation } from "@/src/redux/api/transactionApi";
 import {usePaymentMethodListQuery} from "@/src/redux/api/paymentMethodApi";
 import { toast } from "react-hot-toast";
 
 
-const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
+const IncomeModal = ({ isModalOpen, setIsModalOpen,editTransaction=null }) => {
   const [transactionCreate] = useTransactionCreateMutation();
+  const [transactionUpdate] = useTransactionUpdateMutation();
   const { data: categories, isLoading } = useCategoryListByTypeQuery("INCOME");
   const { data: paymentMethods, isLoading:paymentMethodsLoading } = usePaymentMethodListQuery();
   const onSubmit = async (data) => {
+    console.log(data)
     data.type = "INCOME";
     try{
-      const res = await transactionCreate(data).unwrap();
-      toast.success("Income added successfully");
+      if(editTransaction){
+        data.id = editTransaction.id;
+        const res = await transactionUpdate(data).unwrap();
+        toast.success("Income updated successfully");
+      }else{
+          const res = await transactionCreate(data).unwrap();
+          toast.success("Income added successfully");
+      }
     }catch(error){
       toast.error("Income saved failed. try again");
     }
@@ -52,7 +60,13 @@ const IncomeModal = ({ isModalOpen, setIsModalOpen }) => {
             </div>
             <Form
               submitHandler={onSubmit}
-              defaultValues={{ date: new Date().toISOString().split("T")[0] }}
+              defaultValues={{ 
+                date: editTransaction?.date ? new Date(editTransaction?.date).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+                amount:editTransaction?.amount,
+                paymentMethodId:editTransaction?.payment_method_id,
+                categoryId:editTransaction?.category_id,
+                notes:editTransaction?.notes 
+              }}
             >
               <div className="space-y-4">
                 {/* Category Name */}

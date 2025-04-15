@@ -1,23 +1,23 @@
 "use client";
-import { FiTrash, FiEdit } from "react-icons/fi";
 import { useState } from "react";
-import { useCategoryListQuery } from "@/src/redux/api/categoryApi";
-import DeleteModal from "@/src/components/modals/DeleteModal";
 import IncomeModal from "@/src/components/modals/IncomeModal";
 import ExpenseModal from "@/src/components/modals/ExpenseModal";
 import TransactionList from "@/src/components/tables/TransactionList";
 export default function Transactions() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const { data: categories, isLoading } = useCategoryListQuery();
 
-  const deleteHandler = (id) => {
-    setIsDeleteModalOpen(true);
-  };
+  const [editTransaction, setEditTransaction] = useState(null);
 
-  const deleteCategory = async (id) => {
-    const response = await categoryDelete(id);
+  const handleEditTransaction = (data) => {
+    console.log(data)
+    if(data.type === "INCOME"){
+      setEditTransaction(data);
+      setIsModalOpen(true);
+    }else{
+      setEditTransaction(data);
+      setIsExpenseModalOpen(true);
+    }
   };
 
   return (
@@ -70,22 +70,17 @@ export default function Transactions() {
       {/* Category Cards Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1">
         {/* Transaction List */}
-        <TransactionList transactionType="FULL" />
+        <TransactionList editHandler={handleEditTransaction} transactionType="FULL" />
       </div>
 
       {/* Modal */}
-      <IncomeModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+      <IncomeModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} editTransaction={editTransaction} />
       <ExpenseModal
         isModalOpen={isExpenseModalOpen}
         setIsModalOpen={setIsExpenseModalOpen}
+        editTransaction={editTransaction}
       />
-      {/* Delete Modal */}
-      <DeleteModal
-        isModalOpen={isDeleteModalOpen}
-        setIsModalOpen={setIsDeleteModalOpen}
-        deleteId={1}
-        onDelete={deleteCategory}
-      />
+
     </div>
   );
 }

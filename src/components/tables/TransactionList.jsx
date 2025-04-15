@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { FiArrowUp, FiArrowDown, FiRepeat,FiTrash } from "react-icons/fi";
+import { FiArrowUp, FiArrowDown, FiRepeat,FiTrash,FiEdit } from "react-icons/fi";
 
 import {useTransactionListByTypeQuery,useTransactionDeleteMutation} from "@/src/redux/api/transactionApi";
 import { useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import ListLoadingPlaceholder from "./ListLoadingPlaceholder";
 import DeleteModal from "@/src/components/modals/DeleteModal";
 import { toast } from "react-hot-toast";
 
-const TransactionList = ({ transactionType = null }) => {
+const TransactionList = ({ transactionType = null,editHandler=null }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const { currency } = useSelector((state) => state.settings);
@@ -45,31 +45,7 @@ const TransactionList = ({ transactionType = null }) => {
     
   };
 
-  const getStatusBadge = (status) => {
-    const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";
-    switch (status) {
-      case "success":
-        return (
-          <span className={`${baseClasses} bg-green-50 text-green-700`}>
-            Success
-          </span>
-        );
-      case "incomplete":
-        return (
-          <span className={`${baseClasses} bg-gray-100 text-gray-700`}>
-            Incomplete
-          </span>
-        );
-      case "failed":
-        return (
-          <span className={`${baseClasses} bg-red-50 text-red-700`}>
-            Failed
-          </span>
-        );
-      default:
-        return null;
-    }
-  };
+ 
 
   return (
     <div className="overflow-x-auto">
@@ -151,9 +127,12 @@ const TransactionList = ({ transactionType = null }) => {
                     {transaction?.category?.name ? transaction.category.name : ""}
                   </b>
                 </td>
-                <td>
+                <td className="flex items-center">
                     <div onClick={() => deleteHandler(transaction?.id)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-full cursor-pointer">
                       <FiTrash size={18} />
+                    </div>
+                    <div onClick={() => editHandler(transaction)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-full cursor-pointer">
+                      <FiEdit size={18} />
                     </div>
                 </td>
               </tr>

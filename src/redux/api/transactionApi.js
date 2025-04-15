@@ -11,6 +11,14 @@ export const transactionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["transaction","paymentMethod","category"],
     }),
+    transactionUpdate: build.mutation({
+      query: (transactionData) => ({
+        url: `${url}/update`,
+        method: "POST",
+        data: transactionData,
+      }),
+      invalidatesTags: ["transaction","paymentMethod","category"],
+    }),
     transactionListByType: build.query({
       query: (type) => ({
         url: `${url}/list/${type}`,
@@ -39,5 +47,6 @@ export const {
   useTransactionCreateMutation,
   useTransactionListByTypeQuery,
   useTransactionListQuery,
-  useTransactionDeleteMutation
+  useTransactionDeleteMutation,
+  useTransactionUpdateMutation
 } = transactionApi;

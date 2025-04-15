@@ -4,13 +4,14 @@ import Form from "../form/Form";
 import FormSelect from "../form/FormSelect";
 import { useCategoryListByTypeQuery } from "@/src/redux/api/categoryApi";
 import FormTextarea from "../form/FormTextarea";
-import { useTransactionCreateMutation } from "@/src/redux/api/transactionApi";
+import { useTransactionCreateMutation,useTransactionUpdateMutation } from "@/src/redux/api/transactionApi";
 import { usePaymentMethodListQuery } from "@/src/redux/api/paymentMethodApi";
 import { toast } from "react-hot-toast";
 
 
-const ExpenseModal = ({ isModalOpen, setIsModalOpen }) => {
+const ExpenseModal = ({ isModalOpen, setIsModalOpen,editTransaction=null }) => {
   const [transactionCreate] = useTransactionCreateMutation();
+  const [transactionUpdate] = useTransactionUpdateMutation();
   const { data: categories, isLoading } = useCategoryListByTypeQuery("EXPENSE");
   const { data: paymentMethods, isLoading: paymentMethodsLoading } =
     usePaymentMethodListQuery();
@@ -18,8 +19,14 @@ const ExpenseModal = ({ isModalOpen, setIsModalOpen }) => {
   const onSubmit = async (data) => {
     data.type = "EXPENSE";
     try{
-      const res = await transactionCreate(data).unwrap();
-      toast.success("Expense added successfully");
+      if(editTransaction){
+        data.id = editTransaction.id;
+        const res = await transactionUpdate(data).unwrap();
+        toast.success("Expense updated successfully");
+      }else{
+        const res = await transactionCreate(data).unwrap();
+        toast.success("Expense added successfully");
+      }
     }catch(error){
       toast.error("Expense saved failed. try again");
     }
@@ -54,7 +61,13 @@ const ExpenseModal = ({ isModalOpen, setIsModalOpen }) => {
             </div>
             <Form
               submitHandler={onSubmit}
-              defaultValues={{ date: new Date().toISOString().split("T")[0] }}
+              defaultValues={{ 
+                date: editTransaction?.date ? new Date(editTransaction?.date).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+                amount:editTransaction?.amount,
+                paymentMethodId:editTransaction?.payment_method_id,
+                categoryId:editTransaction?.category_id,
+                notes:editTransaction?.notes 
+              }}
             >
               <div className="space-y-4">
                
@@ -132,7 +145,7 @@ const ExpenseModal = ({ isModalOpen, setIsModalOpen }) => {
                     type="submit"
                     className="flex-1 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors cursor-pointer"
                   >
-                    Save Transaction
+                    {editTransaction ? "Update Transaction" : "Save Transaction"}
                   </button>
                 </div>
               </div>
