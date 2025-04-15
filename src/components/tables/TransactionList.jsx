@@ -35,7 +35,7 @@ const TransactionList = ({ transactionType = null }) => {
     setDeleteId(id);
   };
 
-  const deleteTransaction = async (id) => {
+  const deleteData = async (id) => {
     const response = await transactionDelete(id);
     if(response.error){
       toast.error(response.error.data.message);
@@ -167,7 +167,7 @@ const TransactionList = ({ transactionType = null }) => {
         isModalOpen={isDeleteModalOpen}
         setIsModalOpen={setIsDeleteModalOpen}
         deleteId={deleteId}
-        onDelete={deleteTransaction}
+        onDelete={deleteData}
       />
     </div>
   );
