@@ -1,16 +1,20 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { FiArrowUp, FiArrowDown, FiRepeat } from "react-icons/fi";
-import {
-  useTransactionListByTypeQuery
-} from "@/src/redux/api/transactionApi";
+import React, { useState } from "react";
+import { FiArrowUp, FiArrowDown, FiRepeat,FiTrash } from "react-icons/fi";
+
+import {useTransactionListByTypeQuery,useTransactionDeleteMutation} from "@/src/redux/api/transactionApi";
 import { useSelector } from "react-redux";
 import ListLoadingPlaceholder from "./ListLoadingPlaceholder";
+import DeleteModal from "@/src/components/modals/DeleteModal";
+import { toast } from "react-hot-toast";
 
 const TransactionList = ({ transactionType = null }) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
   const { currency } = useSelector((state) => state.settings);
   const { data: transactions, isLoading } =
     useTransactionListByTypeQuery(transactionType);
+    const [transactionDelete] = useTransactionDeleteMutation();
 
 
   const getTypeIcon = (type) => {
@@ -24,6 +28,21 @@ const TransactionList = ({ transactionType = null }) => {
       default:
         return null;
     }
+  };
+
+  const deleteHandler = (id) => {
+    setIsDeleteModalOpen(true);
+    setDeleteId(id);
+  };
+
+  const deleteTransaction = async (id) => {
+    const response = await transactionDelete(id);
+    if(response.error){
+      toast.error(response.error.data.message);
+    }else{
+      toast.success("Transaction deleted successfully");
+    }
+    
   };
 
   const getStatusBadge = (status) => {
@@ -72,6 +91,7 @@ const TransactionList = ({ transactionType = null }) => {
             <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
               Activity
             </th>
+      
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -131,11 +151,24 @@ const TransactionList = ({ transactionType = null }) => {
                     {transaction?.category?.name ? transaction.category.name : ""}
                   </b>
                 </td>
+                <td>
+                    <div onClick={() => deleteHandler(transaction?.id)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-full cursor-pointer">
+                      <FiTrash size={18} />
+                    </div>
+                </td>
               </tr>
             ))
           )}
         </tbody>
       </table>
+
+       {/* Delete Modal */}
+       <DeleteModal
+        isModalOpen={isDeleteModalOpen}
+        setIsModalOpen={setIsDeleteModalOpen}
+        deleteId={deleteId}
+        onDelete={deleteTransaction}
+      />
     </div>
   );
 };
