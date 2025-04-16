@@ -3,10 +3,10 @@ import FormInput from "../form/FormInput";
 import Form from "../form/Form";
 import FormSelect from "../form/FormSelect";
 import FormTextarea from "../form/FormTextarea";
-  import { usePaymentMethodCreateMutation } from "@/src/redux/api/paymentMethodApi";
+  import { usePaymentMethodCreateMutation,usePaymentMethodUpdateMutation } from "@/src/redux/api/paymentMethodApi";
 import toast from "react-hot-toast";
 
-const PaymentMethodModal = ({ isModalOpen, setIsModalOpen }) => {
+const PaymentMethodModal = ({ isModalOpen, setIsModalOpen,editData=null }) => {
 
 
   const paymentMethodType=[
@@ -20,11 +20,18 @@ const PaymentMethodModal = ({ isModalOpen, setIsModalOpen }) => {
     "HouseAccount"
   ];
 
-  const [paymentMethodCreate] = usePaymentMethodCreateMutation();
+  const [paymentMethodCreate, {isLoading}] = usePaymentMethodCreateMutation();
+  const [paymentMethodUpdate, {isLoading:isUpdating}] = usePaymentMethodUpdateMutation();
   const onSubmit = async (data) => {
     try{
-      const res = await paymentMethodCreate(data).unwrap();
-      toast.success("Payment Method Created Successfully");
+      if(editData){
+        data.id = editData.id;
+        const res = await paymentMethodUpdate(data).unwrap();
+        toast.success("Payment Method Updated Successfully");
+      }else{
+        const res = await paymentMethodCreate(data).unwrap();
+        toast.success("Payment Method Created Successfully");
+      }
     }catch(error){
       toast.error("Payment Method Creation Failed");
     }
@@ -37,7 +44,7 @@ const PaymentMethodModal = ({ isModalOpen, setIsModalOpen }) => {
         <div className="fixed inset-0 bg-[#0000008a] bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold">Add Payment Method</h2>
+              <h2 className="text-xl font-semibold">{editData ? "Edit Payment Method" : "Add Payment Method"}</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-500 hover:text-gray-700 cursor-pointer"
@@ -60,10 +67,10 @@ const PaymentMethodModal = ({ isModalOpen, setIsModalOpen }) => {
             <Form
               submitHandler={onSubmit}
               defaultValues={{
-                name: "",
-                amount: 0,
-                paymentType: "Cash",
-                notes: "",
+                name: editData?.name || "",
+                amount: editData?.initialAmount || 0,
+                paymentType: editData?.type || "Cash",
+                notes: editData?.notes || "",
               }}
             >
               <div className="space-y-4">
@@ -125,7 +132,7 @@ const PaymentMethodModal = ({ isModalOpen, setIsModalOpen }) => {
                     type="submit"
                     className="flex-1 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors cursor-pointer"
                   >
-                    Save 
+                    {editData?'Update':'Add'} 
                   </button>
                 </div>
               </div>

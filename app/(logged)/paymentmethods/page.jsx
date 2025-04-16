@@ -3,29 +3,41 @@ import { FiTrash, FiEdit } from "react-icons/fi";
 import PaymentMethodModal from "@/src/components/modals/PaymentMethodModal";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  useCategoryDeleteMutation,
-} from "@/src/redux/api/categoryApi";
 import DeleteModal from "@/src/components/modals/DeleteModal";
-import { usePaymentMethodListQuery } from "@/src/redux/api/paymentMethodApi";
+import { usePaymentMethodListQuery,usePaymentMethodDeleteMutation} from "@/src/redux/api/paymentMethodApi";
+import toast from "react-hot-toast";
+
+
+
 export default function CategoryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteCategoryId, setDeleteCategoryId] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+  const [editData, setEditData] = useState(null);
 
   const { data: methods, isLoading } = usePaymentMethodListQuery();
 
-  const [categoryDelete] = useCategoryDeleteMutation();
+  const [paymentMethodDelete] = usePaymentMethodDeleteMutation();
   const { currency } = useSelector((state) => state.settings);
   const deleteHandler = (id) => {
     setIsDeleteModalOpen(true);
-    setDeleteCategoryId(id);
+    setDeleteId(id);
   };
 
-  const deleteCategory = async (id) => {
-    const response = await categoryDelete(id);
-    console.log("Deleting category with ID:", response);
+  const deleteData = async (id) => {
+    try{
+        const res = await paymentMethodDelete(id);
+        toast.success("Payment Method deleted Successfully");
+    }catch(error){
+      toast.error("Payment Method deleted Failed");
+    }
+    
   };
+
+  const handleEdit= async (data)=>{
+    setEditData(data);
+    setIsModalOpen(true);
+  }
 
   return (
     <div className="min-h-screen p-4">
@@ -83,7 +95,7 @@ export default function CategoryPage() {
                 >
                   <FiTrash size={18} />
                 </button>
-                <button className="p-1.5 text-gray-400 hover:text-blue-500 rounded-full hover:bg-blue-50">
+                <button onClick={()=>handleEdit(method)} className="p-1.5 text-gray-400 hover:text-blue-500 rounded-full hover:bg-blue-50">
                   <FiEdit size={18} />
                 </button>
               </div>
@@ -96,13 +108,14 @@ export default function CategoryPage() {
       <PaymentMethodModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
+        editData={editData}
       />
       {/* Delete Modal */}
       <DeleteModal
         isModalOpen={isDeleteModalOpen}
         setIsModalOpen={setIsDeleteModalOpen}
-        deleteId={deleteCategoryId}
-        onDelete={deleteCategory}
+        deleteId={deleteId}
+        onDelete={deleteData}
       />
     </div>
   );
