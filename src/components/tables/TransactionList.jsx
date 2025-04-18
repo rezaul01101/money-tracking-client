@@ -1,14 +1,19 @@
 "use client";
 import React, { useState } from "react";
 import { FiArrowUp, FiArrowDown, FiRepeat,FiTrash,FiEdit } from "react-icons/fi";
-
+import { useDispatch } from "react-redux";
 import {useTransactionListByTypeQuery,useTransactionDeleteMutation} from "@/src/redux/api/transactionApi";
 import { useSelector } from "react-redux";
 import ListLoadingPlaceholder from "./ListLoadingPlaceholder";
 import DeleteModal from "@/src/components/modals/DeleteModal";
 import { toast } from "react-hot-toast";
+import { storeTransactionEditData ,storeTranssactionType} from "@/src/redux/features/transactionSlice";
 
-const TransactionList = ({ transactionType = null,editHandler=null }) => {
+
+const TransactionList = ({ transactionType = null }) => {
+  const dispatch = useDispatch();
+
+  const [editTransaction, setEditTransaction] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const { currency } = useSelector((state) => state.settings);
@@ -45,6 +50,19 @@ const TransactionList = ({ transactionType = null,editHandler=null }) => {
     
   };
 
+
+
+  const handleEditTransaction = (data) => {
+    dispatch(storeTransactionEditData(data));
+    dispatch(storeTranssactionType(data?.type));
+    // if(data.type === "INCOME"){
+    //   dispatch(storeTranssactionType("INCOME"));
+    //   setIsModalOpen(true);
+    // }else{
+    //   dispatch(storeTranssactionType("EXPENSE"));
+    //   setIsExpenseModalOpen(true);
+    // }
+  };
  
 
   return (
@@ -131,7 +149,7 @@ const TransactionList = ({ transactionType = null,editHandler=null }) => {
                     <div onClick={() => deleteHandler(transaction?.id)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-full cursor-pointer">
                       <FiTrash size={18} />
                     </div>
-                    <div onClick={() => editHandler(transaction)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-full cursor-pointer">
+                    <div onClick={() => handleEditTransaction(transaction)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-full cursor-pointer">
                       <FiEdit size={18} />
                     </div>
                 </td>

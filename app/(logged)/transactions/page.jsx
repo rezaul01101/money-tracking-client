@@ -1,24 +1,25 @@
 "use client";
-import { useState } from "react";
+import { useState,useEffect} from "react";
 import IncomeModal from "@/src/components/modals/IncomeModal";
 import ExpenseModal from "@/src/components/modals/ExpenseModal";
 import TransactionList from "@/src/components/tables/TransactionList";
+import { useSelector } from "react-redux";
+
 export default function Transactions() {
+  const { transactionType } = useSelector((state) => state.transaction);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
 
-  const [editTransaction, setEditTransaction] = useState(null);
 
-  const handleEditTransaction = (data) => {
-    console.log(data)
-    if(data.type === "INCOME"){
-      setEditTransaction(data);
+  useEffect(() => {
+    if(transactionType === "INCOME"){
       setIsModalOpen(true);
-    }else{
-      setEditTransaction(data);
+    }
+    
+    if(transactionType === "EXPENSE"){
       setIsExpenseModalOpen(true);
     }
-  };
+  }, [transactionType]);
 
   return (
     <div className="min-h-screen p-4">
@@ -70,15 +71,14 @@ export default function Transactions() {
       {/* Category Cards Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1">
         {/* Transaction List */}
-        <TransactionList editHandler={handleEditTransaction} transactionType="FULL" />
+        <TransactionList transactionType="FULL" />
       </div>
 
       {/* Modal */}
-      <IncomeModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} editTransaction={editTransaction} />
+      <IncomeModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
       <ExpenseModal
         isModalOpen={isExpenseModalOpen}
         setIsModalOpen={setIsExpenseModalOpen}
-        editTransaction={editTransaction}
       />
 
     </div>

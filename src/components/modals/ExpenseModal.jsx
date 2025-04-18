@@ -7,9 +7,16 @@ import FormTextarea from "../form/FormTextarea";
 import { useTransactionCreateMutation,useTransactionUpdateMutation } from "@/src/redux/api/transactionApi";
 import { usePaymentMethodListQuery } from "@/src/redux/api/paymentMethodApi";
 import { toast } from "react-hot-toast";
+import { useDispatch,useSelector } from "react-redux";
+import { storeTranssactionType,storeTransactionEditData} from "@/src/redux/features/transactionSlice";
 
 
-const ExpenseModal = ({ isModalOpen, setIsModalOpen,editTransaction=null }) => {
+const ExpenseModal = ({ isModalOpen, setIsModalOpen}) => {
+  const dispatch = useDispatch();
+
+  const { transactionEditData:editTransaction } = useSelector((state) => state.transaction);
+
+
   const [transactionCreate] = useTransactionCreateMutation();
   const [transactionUpdate] = useTransactionUpdateMutation();
   const { data: categories, isLoading } = useCategoryListByTypeQuery("EXPENSE");
@@ -17,6 +24,8 @@ const ExpenseModal = ({ isModalOpen, setIsModalOpen,editTransaction=null }) => {
     usePaymentMethodListQuery();
 
   const onSubmit = async (data) => {
+    
+
     data.type = "EXPENSE";
     try{
       if(editTransaction){
@@ -31,8 +40,15 @@ const ExpenseModal = ({ isModalOpen, setIsModalOpen,editTransaction=null }) => {
       toast.error("Expense saved failed. try again");
     }
 
-    setIsModalOpen(false);
+    handleCloseModal()
   };
+
+  const handleCloseModal=()=>{
+    dispatch(storeTranssactionType(null));
+    dispatch(storeTransactionEditData(null));
+    setIsModalOpen(false)
+  }
+
   return (
     <div>
       {isModalOpen && (
@@ -41,7 +57,7 @@ const ExpenseModal = ({ isModalOpen, setIsModalOpen,editTransaction=null }) => {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Add Expense</h2>
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => handleCloseModal()}
                 className="text-gray-500 hover:text-gray-700 cursor-pointer"
               >
                 <svg
@@ -136,7 +152,7 @@ const ExpenseModal = ({ isModalOpen, setIsModalOpen,editTransaction=null }) => {
                 <div className="flex gap-3 mt-6">
                   <button
                     type="button"
-                    onClick={() => setIsModalOpen(false)}
+                    onClick={() => handleCloseModal()}
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     Cancel

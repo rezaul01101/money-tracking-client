@@ -1,22 +1,21 @@
 "use client";
 import { FiTrash, FiEdit } from "react-icons/fi";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useCategoryListQuery } from "@/src/redux/api/categoryApi";
 import DeleteModal from "@/src/components/modals/DeleteModal";
 import ExpenseModal from "@/src/components/modals/ExpenseModal";
 import TransactionList from "@/src/components/tables/TransactionList";
-export default function ExpensePage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const { data: categories, isLoading } = useCategoryListQuery();
-  const deleteHandler = (id) => {
-    setIsDeleteModalOpen(true);
-  };
+import { useSelector } from "react-redux";
 
-  const deleteCategory = async (id) => {
-    const response = await categoryDelete(id);
-    console.log("Deleting category with ID:", response);
-  };
+export default function ExpensePage() {
+  const { transactionType } = useSelector((state) => state.transaction);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if(transactionType === "EXPENSE"){
+      setIsModalOpen(true);
+    }
+  }, [transactionType]);
 
   return (
     <div className="min-h-screen p-4">
@@ -54,13 +53,6 @@ export default function ExpensePage() {
       <ExpenseModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
-      />
-      {/* Delete Modal */}
-      <DeleteModal
-        isModalOpen={isDeleteModalOpen}
-        setIsModalOpen={setIsDeleteModalOpen}
-        deleteId={1}
-        onDelete={deleteCategory}
       />
     </div>
   );
