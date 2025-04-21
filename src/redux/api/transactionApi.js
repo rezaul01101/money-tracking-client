@@ -9,7 +9,7 @@ export const transactionApi = baseApi.injectEndpoints({
         method: "POST",
         data: transactionData,
       }),
-      invalidatesTags: ["transaction","paymentMethod","category"],
+      invalidatesTags: ["transaction", "paymentMethod", "category"],
     }),
     transactionUpdate: build.mutation({
       query: (transactionData) => ({
@@ -17,14 +17,21 @@ export const transactionApi = baseApi.injectEndpoints({
         method: "POST",
         data: transactionData,
       }),
-      invalidatesTags: ["transaction","paymentMethod","category"],
+      invalidatesTags: ["transaction", "paymentMethod", "category"],
     }),
     transactionListByType: build.query({
-      query: (type) => ({
-        url: `${url}/list/${type}`,
-        method: "GET",
-      }),
-      providesTags: ["transaction","paymentMethod"],
+      query: (params) => {
+        const { type, page, limit } = params;
+        return {
+          url: `${url}/list/${type}`,
+          method: "GET",
+          params: {
+            page,
+            limit,
+          },
+        };
+      },
+      providesTags: ["transaction", "paymentMethod"],
     }),
     transactionList: build.query({
       query: () => ({
@@ -48,5 +55,5 @@ export const {
   useTransactionListByTypeQuery,
   useTransactionListQuery,
   useTransactionDeleteMutation,
-  useTransactionUpdateMutation
+  useTransactionUpdateMutation,
 } = transactionApi;

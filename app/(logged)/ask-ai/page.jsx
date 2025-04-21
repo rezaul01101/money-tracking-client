@@ -108,12 +108,12 @@ const ChatPage = () => {
               disabled={isThinking}
             />
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex space-x-2 text-gray-500">
-              <button type="button" className="hover:text-indigo-600">
+              {/* <button type="button" className="hover:text-indigo-600">
                 <PaperclipIcon />
               </button>
               <button type="button" className="hover:text-indigo-600">
                 <LibraryIcon />
-              </button>
+              </button> */}
               <button type="button" className="hover:text-indigo-600">
                 <SparklesIcon />
               </button>
