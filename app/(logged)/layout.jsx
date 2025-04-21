@@ -7,14 +7,20 @@ import { AuthProvider } from "@/src/context/AuthContext";
 import { useGetUserQuery } from "@/src/redux/api/userApi";
 import { useDispatch } from "react-redux";
 import { storeUserInfo } from "@/src/redux/features/user/userSlice";
+import { useRouter } from "next/navigation";
 
 export default function RootLayout({ children }) {
   const dispatch = useDispatch();
   const { data: user } = useGetUserQuery();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
+
 
   useEffect(() => {
-    dispatch(storeUserInfo(user));
+    if(user){
+      dispatch(storeUserInfo(user));
+    }
+    
   }, [user]);
 
   useEffect(() => {
