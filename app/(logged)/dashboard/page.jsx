@@ -2,6 +2,8 @@
 import { useAuth } from "@/src/context/AuthContext";
 import { useSelector } from "react-redux";
 
+import BarChartComponent from "@/src/components/charts/BarChart";
+
 export default function Dashboard() {
   const { currency } = useSelector((state) => state.settings);
   const { user, logout } = useAuth();
@@ -9,9 +11,15 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen p-4">
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <div className="w-full p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+        <p className="text-xl text-gray-500 mb-4 text-center">
+          Full year income expense report
+        </p>
+        <BarChartComponent />
+      </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {/* Income Card */}
-        <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+        {/* <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
               <svg
@@ -37,10 +45,10 @@ export default function Dashboard() {
           <p className="text-sm text-gray-500 mt-2">
             Compared to $38,500 last month
           </p>
-        </div>
+        </div> */}
 
         {/* Expense Card */}
-        <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+        {/* <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
               <svg
@@ -66,10 +74,10 @@ export default function Dashboard() {
           <p className="text-sm text-gray-500 mt-2">
             Compared to $26,500 last month
           </p>
-        </div>
+        </div> */}
 
         {/* Savings Card */}
-        <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+        {/* <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
               <svg
@@ -104,10 +112,10 @@ export default function Dashboard() {
               ></div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Balance Card */}
-        <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+        {/* <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
               <svg
@@ -141,7 +149,7 @@ export default function Dashboard() {
               <div className="text-sm font-medium">$29,050</div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

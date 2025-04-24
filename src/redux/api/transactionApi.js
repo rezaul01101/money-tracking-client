@@ -47,6 +47,12 @@ export const transactionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["transaction"],
     }),
+    fullYearIncomExpense: build.query({
+      query: (year) => ({
+        url: `${url}/full-year-income-expense/${year}`,
+        method: "get",
+      }),
+    }),
   }),
 });
 
@@ -56,4 +62,5 @@ export const {
   useTransactionListQuery,
   useTransactionDeleteMutation,
   useTransactionUpdateMutation,
+  useFullYearIncomExpenseQuery
 } = transactionApi;
