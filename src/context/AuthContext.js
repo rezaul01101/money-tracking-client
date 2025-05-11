@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authKey } from "../constants/storageKey";
+import { decodedToken } from "../utils/jwt";
 
 const AuthContext = createContext();
 
@@ -11,14 +12,25 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  const checkTokenIsValid = (token) => {
+    const tokenData = decodedToken(token);
+    const currentTime = Math.floor(Date.now() / 1000); // current time in seconds
+    return tokenData.exp > currentTime;
+  };
   useEffect(() => {
     // Check if user is logged in by verifying token in localStorage
     const token = localStorage.getItem(authKey);
     if (token) {
+      if (!checkTokenIsValid(token)) {
+        console.log("Token expired");
+        localStorage.removeItem(authKey);
+        router.push("/login");
+        return;
+      }
       // You can add token verification logic here
       setUser({ token });
     } else {
-      console.log("No token found");  
+      console.log("No token found");
       router.push("/login");
     }
     setLoading(false);
