@@ -7,14 +7,14 @@ const Nav = () => {
   return (
     <div>
       <nav className="bg-white shadow-sm fixed w-full z-50">
-        <div className="container mx-auto max-w-6xl px-4 md:px-8">
+        <div className="container mx-auto px-4 md:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                <div className="text-white font-bold">A</div>
+                <div className="text-white font-bold">M</div>
               </div>
-              <span className="text-xl font-medium">Acme Inc.</span>
+              <span className="text-xl font-medium">Money Manager</span>
             </div>
 
             {/* Desktop Menu */}
