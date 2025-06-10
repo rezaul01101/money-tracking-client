@@ -3,6 +3,7 @@ import { useState,useEffect} from "react";
 import IncomeModal from "@/src/components/modals/IncomeModal";
 import ExpenseModal from "@/src/components/modals/ExpenseModal";
 import TransactionList from "@/src/components/tables/TransactionList";
+import TransactionListMobile from "@/src/components/tables/TransactionListMobile";
 import { useSelector } from "react-redux";
 
 export default function Transactions() {
@@ -71,7 +72,8 @@ export default function Transactions() {
       {/* Category Cards Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1">
         {/* Transaction List */}
-        <TransactionList transactionType="FULL" />
+        {/* <TransactionList transactionType="FULL" /> */}
+        <TransactionListMobile transactionType="FULL" />
       </div>
 
       {/* Modal */}

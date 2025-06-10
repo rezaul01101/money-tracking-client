@@ -73,7 +73,7 @@ const TransactionList = ({ transactionType = null }) => {
 
   return (
     <div className="overflow-x-auto max-w-full">
-      <table className="max-w-full">
+      <table className="max-w-full w-[100%]">
         <thead>
           <tr className="border-b border-gray-200">
             <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
@@ -85,9 +85,9 @@ const TransactionList = ({ transactionType = null }) => {
             <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
               Payment Method
             </th>
-            <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            {/* <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
               Notes
-            </th>
+            </th> */}
             <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
               Activity
             </th>
@@ -141,9 +141,9 @@ const TransactionList = ({ transactionType = null }) => {
                       {transaction?.paymentMethod?.name}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  {/* <td className="px-6 py-4 whitespace-nowrap">
                     {transaction.notes}
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {transaction.type === "EXPENSE"
                       ? `Sending money to `

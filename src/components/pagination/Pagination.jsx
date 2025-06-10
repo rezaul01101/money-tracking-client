@@ -69,7 +69,7 @@ const Pagination = ({listOfItems,currentPage,setCurrentPage,pageSize}) => {
     <div>
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
-          <div className="flex justify-between items-center w-full">
+          <div className="flex justify-between items-center w-full flex-col md:flex-row ">
             <div className="text-sm text-gray-700">
               Showing{" "}
               <span className="font-medium">
@@ -93,7 +93,7 @@ const Pagination = ({listOfItems,currentPage,setCurrentPage,pageSize}) => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`px-3 py-1 rounded-md ${
+                className={`px-3 py-1 rounded-md hidden md:block ${
                   currentPage === 1
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
@@ -130,7 +130,7 @@ const Pagination = ({listOfItems,currentPage,setCurrentPage,pageSize}) => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className={`px-3 py-1 rounded-md ${
+                className={`px-3 py-1 rounded-md hidden md:block ${
                   currentPage === totalPages
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
