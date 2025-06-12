@@ -23,7 +23,7 @@ export default function Transactions() {
   }, [transactionType]);
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen">
       {/* Header with Add Category Button */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Transactions Overview</h1>

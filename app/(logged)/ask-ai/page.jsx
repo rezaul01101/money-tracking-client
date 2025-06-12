@@ -96,15 +96,15 @@ const ChatPage = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 md:p-6 bg-white border-t border-gray-200 w-[60vw] mx-auto">
+      <div className="p-4 md:p-6 bg-white border-t border-gray-200 w-[90vw] md:w-[60vw] mx-auto">
         <div className="max-w-4xl mx-auto">
           <form onSubmit={handleSendMessage} className="relative">
-            <input
+            <textarea
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="Ask me anything..."
-              className="w-full rounded-lg border border-gray-300 px-4 py-4 pr-28 pl-12 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700"
+              className="w-full rounded-lg border border-gray-300 px-4 py-4 pr-15 pl-12 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700"
               disabled={isThinking}
             />
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex space-x-2 text-gray-500">
