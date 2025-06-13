@@ -103,7 +103,7 @@ const ChatPage = () => {
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              placeholder="Ask me anything..."
+              placeholder="How can we assist with your financial records?..."
               className="w-full rounded-lg border border-gray-300 px-4 py-4 pr-15 pl-12 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700"
               disabled={isThinking}
             />

@@ -1,25 +1,30 @@
 "use client";
 import { useAuth } from "@/src/context/AuthContext";
 import { useSelector } from "react-redux";
+import { useDashboardQuery } from '@/src/redux/api/dashboardApi';
+
 
 import BarChartComponent from "@/src/components/charts/BarChart";
 
 export default function Dashboard() {
+  const { data } = useDashboardQuery();
   const { currency } = useSelector((state) => state.settings);
   const { user, logout } = useAuth();
+
+  const convertToCurrency=(amount)=>{
+    const formattedBDT = new Intl.NumberFormat('en-BD', {
+      maximumFractionDigits: 2,
+    }).format(amount);
+    return formattedBDT;
+  }
 
   return (
     <div className="min-h-screen p-4">
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-      <div className="w-full p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
-        <p className="text-xl text-gray-500 mb-4 text-center">
-          Full year income expense report
-        </p>
-        <BarChartComponent />
-      </div>
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {/* Income Card */}
-        {/* <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+        <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
               <svg
@@ -41,14 +46,16 @@ export default function Dashboard() {
             </span>
           </div>
           <h2 className="text-gray-500 text-sm mb-1">Income</h2>
-          <p className="text-2xl font-bold text-gray-900">{currency}43,300</p>
-          <p className="text-sm text-gray-500 mt-2">
-            Compared to $38,500 last month
+          <p className="text-2xl font-bold text-gray-900">
+            {currency}{convertToCurrency( data?.income?.currentMonth)}
           </p>
-        </div> */}
+          <p className="text-sm text-gray-500 mt-2">
+            Compared to {currency}{convertToCurrency(data?.income?.lastMonth)} last month
+          </p>
+        </div>
 
         {/* Expense Card */}
-        {/* <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+        <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
               <svg
@@ -74,7 +81,7 @@ export default function Dashboard() {
           <p className="text-sm text-gray-500 mt-2">
             Compared to $26,500 last month
           </p>
-        </div> */}
+        </div>
 
         {/* Savings Card */}
         {/* <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
@@ -150,6 +157,12 @@ export default function Dashboard() {
             </div>
           </div>
         </div> */}
+      </div>
+      <div className="w-full p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow mt-5">
+        <p className="text-xl text-gray-500 mb-4 text-center">
+          Full year income expense report
+        </p>
+        <BarChartComponent />
       </div>
     </div>
   );
