@@ -77,9 +77,9 @@ export default function Dashboard() {
             </span>
           </div>
           <h2 className="text-gray-500 text-sm mb-1">Expenses</h2>
-          <p className="text-2xl font-bold text-gray-900">{currency}28,650</p>
+          <p className="text-2xl font-bold text-gray-900">{currency}{convertToCurrency( data?.expense?.currentMonth)}</p>
           <p className="text-sm text-gray-500 mt-2">
-            Compared to $26,500 last month
+            Compared to {currency}{convertToCurrency( data?.expense?.lastMonth)} last month
           </p>
         </div>
 
